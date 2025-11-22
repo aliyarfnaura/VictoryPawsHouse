@@ -15,12 +15,12 @@
         <div class="flex items-center space-x-3">
             <!-- IG -->
             <div class="flex items-center space-x-1">
-                <img src="{{ asset('images/ig.png') }}" alt="IG" class="w-5 h-5">
-                <span class="font-semibold text-sm">victorypawshouse</span>
+                <img src="{{ asset('images/logo_ig.png') }}" alt="IG" class="w-5 h-5">
+                <a href="https://instagram.com/victorypawshouse" target="_blank" class="hover:underline">@victorypawshouse</a>
             </div>
             <!-- WA -->
             <div class="flex items-center space-x-1">
-                <img src="{{ asset('images/wa.png') }}" alt="WA" class="w-5 h-5">
+                <img src="{{ asset('images/logo_wa.png') }}" alt="WA" class="w-5 h-5">
                 <span class="text-sm">08111511050</span>
             </div>
         </div>

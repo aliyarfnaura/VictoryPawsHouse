@@ -14,23 +14,25 @@ class Booking extends Model
     
     protected $fillable = [
         'id_pengguna',
-        'id_transaksi', // FK ke transaksi_produk
-        
-        // Data dari Form Baru
-        'tipe_layanan', // Enum/String: Grooming, Pet Hotel, Home Service
-        'nama', // Nama Anda (nama_anda dari form)
+        // 'id_layanan', // <-- Hapus ini jika sudah tidak dipakai (karena pindah ke detail)
+        'nama',
         'nama_hewan',
         'nomor_hp',
         'jenis_hewan',
         'gender_hewan',
-        'jadwal', // Tanggal mulai/Check-in
-        'durasi', // Hanya dipakai Pet Hotel
+        'jadwal',
+        'tanggal_checkout', // <--- WAJIB ADA BARIS INI
+        'durasi',
         'catatan',
-        'status', 
+        'total_harga',
+        'status',
+        'jam_booking',
+        'metode_pembayaran',
     ];
 
     protected $casts = [
-        'jadwal' => 'datetime',
+        'jadwal' => 'date',
+        'tanggal_checkout' => 'date',
     ];
 
     public function pengguna()

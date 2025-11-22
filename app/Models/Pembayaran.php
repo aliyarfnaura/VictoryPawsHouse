@@ -15,9 +15,7 @@ class Pembayaran extends Model
     protected $fillable = [
         'id_booking', 
         'id_transaksi',
-        'metode',
-        'bukti_pembayaran',
-        'status', // enum: Pending, Berhasil, Gagal
+        'bukti_gambar',
         'tanggal_pembayaran',
     ];
 
