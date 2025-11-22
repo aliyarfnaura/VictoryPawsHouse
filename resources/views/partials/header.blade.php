@@ -14,7 +14,7 @@
             <!-- Kanan: Auth Links -->
             <div class="flex items-center space-x-4 font-bold uppercase">
                 @auth
-                    <a href="{{ route('profile.edit') }}" class="flex items-center space-x-2 hover:opacity-80 transition">
+                     <a href="{{ route('profile.index', ['tab' => 'profile']) }}" class="flex items-center space-x-2 hover:underline text-sm ml-2">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
                         <span class="text-sm">HELLO, {{ strtoupper(Auth::user()->username) }}</span>
                     </a>
@@ -51,9 +51,9 @@
                     $navLinks = [
                         'Home' => 'home', 
                         'Layanan' => 'layanan.publik.index', 
-                        'Katalog' => 'home', 
+                        'Katalog' => 'katalog.index', 
                         'Booking' => 'booking.index', 
-                        'Event' => 'home',
+                        'Event' => 'event.index',
                     ];
                 @endphp
                 

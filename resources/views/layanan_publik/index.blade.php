@@ -14,7 +14,7 @@
                     <p class="text-sm text-gray-600 mb-4">
                         {{ $grooming->deskripsi ?? 'Perawatan bulu, kulit, kuku, dan telinga oleh groomer profesional untuk kesehatan dan penampilan prima.' }}
                     </p>
-                    <a href="{{ route('booking.index') }}" class="bg-custom-brown text-white px-6 py-2 rounded-full font-semibold hover:bg-[#4a3719] transition duration-300">
+                    <a href="{{ route('booking.index') }}" class="bg-custom-brown text-white px-6 py-2 rounded-full font-semibold hover:bg-gray-300 transition duration-300">
                         Booking Sekarang
                     </a>
                 </div>
@@ -28,7 +28,7 @@
                     <p class="text-sm text-gray-600 mb-4">
                         {{ $hotel->deskripsi ?? 'Penginapan aman dan nyaman dengan fasilitas lengkap. Peliharaan terjamin terawat selama Anda berpergian.' }}
                     </p>
-                    <a href="{{ route('booking.index') }}" class="bg-custom-brown text-white px-6 py-2 rounded-full font-semibold hover:bg-[#4a3719] transition duration-300">
+                    <a href="{{ route('booking.index') }}" class="bg-custom-brown text-white px-6 py-2 rounded-full font-semibold hover:bg-gray-300 transition duration-300">
                         Booking Sekarang
                     </a>
                 </div>
@@ -42,7 +42,7 @@
                     <p class="text-sm text-gray-600 mb-4">
                         {{ $home_service->deskripsi ?? 'Layanan grooming langsung ke rumah Anda. Praktis, cepat, dan nyaman!' }}
                     </p>
-                    <a href="{{ route('booking.index') }}" class="bg-custom-brown text-white px-6 py-2 rounded-full font-semibold hover:bg-[#4a3719] transition duration-300">
+                    <a href="{{ route('booking.index') }}" class="bg-custom-brown text-white px-6 py-2 rounded-full font-semibold hover:bg-gray-300 transition duration-300">
                         Booking Sekarang
                     </a>
                 </div>
@@ -60,7 +60,7 @@
                     <p class="text-sm text-gray-600 mb-4">
                         Ajeng pameran dan kontes menarik. More info on Instagram <a href="https://instagram.com/victorypawshouse" class="text-blue-600 hover:underline">@victorypawshouse</a>
                     </p>
-                    <a href="#" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-full font-semibold hover:bg-gray-300 transition duration-300">
+                    <a href="{{ route('event.index') }}" class="bg-custom-brown text-white px-6 py-2 rounded-full font-semibold hover:bg-gray-300 transition duration-300">
                         Lihat Detail Event
                     </a>
                 </div>
@@ -74,7 +74,7 @@
                     <p class="text-sm text-gray-600 mb-4">
                         Untuk kebutuhan hewan kesayangan Anda.
                     </p>
-                    <a href="#" class="bg-custom-brown text-white px-6 py-2 rounded-full font-semibold hover:bg-[#4a3719] transition duration-300">
+                    <a href="{{ route('katalog.index') }}" class="bg-custom-brown text-white px-6 py-2 rounded-full font-semibold hover:bg-gray-300 transition duration-300">
                         Lihat Sekarang
                     </a>
                 </div>

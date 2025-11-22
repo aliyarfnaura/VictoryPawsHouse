@@ -2,60 +2,80 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Validation\Rule;
+// use App\Models\TransaksiProduk; // <-- HAPUS MODEL INI
+use App\Models\Booking; // <-- GUNAKAN MODEL INI
+use App\Models\Ulasan;
+use App\Models\Pengguna;
 
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * Menampilkan Dashboard/Profile Pelanggan dengan konten dinamis (3 Tabs).
      */
-    public function edit(Request $request): View
+    public function index(Request $request, $tab = 'profile'): View
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
-    }
+        $user = $request->user();
+        $data = [];
 
-    /**
-     * Update the user's profile information.
-     */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
-        $request->user()->fill($request->validated());
-
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Ambil data yang dibutuhkan berdasarkan tab
+        if ($tab === 'riwayat' || $tab === 'ulasan') {
+            // KOREKSI UTAMA: Ambil riwayat dari tabel BOOKING
+            $transactions = Booking::where('id_pengguna', $user->id_pengguna)
+                                                    ->orderBy('created_at', 'desc') // Urutkan berdasarkan waktu dibuat
+                                                    ->get();
+                                                    
+            $data['transactions'] = $transactions;
+            
+            // Asumsi status 'Selesai' dan 'Menunggu Pembayaran'
+            $data['completed_transactions'] = $transactions->where('status', 'Selesai');
         }
 
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
-    }
-    
-
-    /**
-     * Delete the user's account.
-     */
-    public function destroy(Request $request): RedirectResponse
-    {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
+        if ($tab === 'ulasan') {
+            // Ambil ulasan yang pernah dibuat pengguna (jika diperlukan)
+            $data['reviews'] = Ulasan::where('id_pengguna', $user->id_pengguna)
+                                    ->orderBy('created_at', 'desc')
+                                    ->get();
+        }
+        
+        // Kirim semua data ke View utama
+        return view('customer.profile.index', [
+            'user' => $user,
+            'tab' => $tab,
+            'data' => $data
         ]);
+    }
 
+    public function update(Request $request): RedirectResponse
+    {
         $user = $request->user();
 
-        Auth::logout();
+        // Validasi data yang masuk (disesuaikan dengan skema tabel 'pengguna' Anda)
+        $request->validate([
+            'username' => ['required', 'string', 'max:255'],
+            // Menggunakan PK kustom id_pengguna untuk menghindari error unique email
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 
+                        Rule::unique('pengguna', 'email')->ignore($user->id_pengguna, 'id_pengguna')], 
+            'nomor_hp' => ['nullable', 'string', 'max:15'], 
+            'alamat' => ['nullable', 'string', 'max:255'], 
+            'kota' => ['nullable', 'string', 'max:100'], 
+        ]);
+        
+        // Simpan perubahan
+        $user->fill($request->only('username', 'email', 'nomor_hp', 'alamat', 'kota'));
 
-        $user->delete();
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $user->save();
 
-        return Redirect::to('/');
+        // Redirect kembali ke tab profile setelah update
+        return Redirect::route('profile.index', ['tab' => 'profile'])->with('success', 'Profile berhasil diperbarui!');
     }
 }

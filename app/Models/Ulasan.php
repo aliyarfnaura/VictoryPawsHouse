@@ -16,9 +16,8 @@ class Ulasan extends Model
         'id_pengguna',
         'id_layanan',
         'id_produk',
-        'rating', // Kolom INT
+        'rating', 
         'komentar',
-        'tanggal',
     ];
     
     protected $casts = [
@@ -30,7 +29,6 @@ class Ulasan extends Model
         return $this->belongsTo(Pengguna::class, 'id_pengguna', 'id_pengguna');
     }
     
-    // Relasi opsional (Ulasan bisa untuk layanan atau produk)
     public function layanan()
     {
         return $this->belongsTo(Layanan::class, 'id_layanan', 'id_layanan');

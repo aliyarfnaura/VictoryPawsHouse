@@ -22,7 +22,7 @@
             <div class="flex items-center space-x-4 font-bold uppercase">
                 @auth
                     {{-- JIKA SUDAH LOGIN --}}
-                    <a href="{{ route('profile.edit') }}" class="flex items-center space-x-2 hover:opacity-80 transition">
+                     <a href="{{ route('profile.index', ['tab' => 'profile']) }}" class="flex items-center space-x-2 hover:underline text-sm ml-2">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
                         <span class="text-sm">HELLO, {{ strtoupper(Auth::user()->username) }}</span>
                     </a>
@@ -76,29 +76,29 @@
                             @else 
                                 text-gray-700 hover:text-gray-900 
                             @endif">Layanan</a>
-                <a href="#" class="text-gray-700 hover:text-gray-900">Katalog</a>
+                <a href="{{ route('katalog.index') }}" class="text-gray-700 hover:text-gray-900">Katalog</a>
                 <a href="{{ route('booking.index') }}" class="text-gray-700 hover:text-gray-900">Booking</a>
-                <a href="#" class="text-gray-700 hover:text-gray-900">Event</a>
+                <a href="{{ route('event.index') }}" class="text-gray-700 hover:text-gray-900">Event</a>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <div class="relative hero-bg">
-        <div class="absolute inset-0 bg-black/20"></div>
+        <div class="absolute inset-0 bg-black/10"></div>
         <div class="relative max-w-7xl mx-auto px-6 py-24 flex items-center">
             <div class="max-w-2xl text-left">
-                <h1 class="text-4xl font-extrabold text-black mb-4">
+                <h1 class="text-3xl font-extrabold text-black mb-4">
                     Wujudkan Peliharaan Sehat dan Ceria!
                 </h1>
-                <p class="text-gray-800 text-base mb-6">
+                <p class="text-gray-600 text-base mb-6">
                     Mari berikan yang terbaik untuk hewan kesayangan Anda di Victory Paws House.
                     Kami menawarkan perawatan grooming, penginapan, dan aktivitas menyenangkan.
                     Dapatkan kemudahan booking dan belanja kebutuhan hewan hanya dengan satu klik.
                 </p>
 
                 <div class="flex space-x-4">
-                    <a href="#"
+                    <a href="{{ route('review.index') }}"
                        class="px-6 py-2 border-2 border-[#6b4423] text-[#6b4423] font-semibold rounded hover:bg-[#6b4423] hover:text-white transition">
                        LIHAT RATING
                     </a>
@@ -110,6 +110,5 @@
             </div>
         </div>
     </div>
-
 </body>
 </html>
