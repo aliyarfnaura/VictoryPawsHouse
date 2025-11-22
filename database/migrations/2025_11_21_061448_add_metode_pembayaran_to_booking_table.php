@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ulasan', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('booking', function (Blueprint $table) {
+            //
+            $table->enum('metode_pembayaran', ['cash', 'transfer']);
         });
     }
 
@@ -22,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ulasan');
+        Schema::table('booking', function (Blueprint $table) {
+            //
+        });
     }
 };

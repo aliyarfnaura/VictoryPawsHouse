@@ -6,7 +6,7 @@
         <div class="max-w-7xl mx-auto flex justify-between items-center px-4">
             <div class="flex items-center space-x-2">
                 <img src="{{ asset('images/logo_ig.png') }}" alt="paw" class="w-5 h-5">
-                <a href="https://instagram.com/victorypawshouse" target="_blank" class="hover:underline">victorypawshouse</a>
+                <a href="https://instagram.com/victorypawshouse" target="_blank" class="hover:underline">@victorypawshouse</a>
                 <img src="{{ asset('images/logo_wa.png') }}" alt="wa" class="w-5 h-5">
                 <span> 08111511050</span>
             </div>

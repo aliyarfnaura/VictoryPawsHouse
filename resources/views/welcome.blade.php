@@ -14,7 +14,7 @@
         <div class="max-w-7xl mx-auto flex justify-between items-center px-4">
             <div class="flex items-center space-x-2">
                 <img src="{{ asset('images/logo_ig.png') }}" alt="paw" class="w-5 h-5">
-                <a href="https://instagram.com/victorypawshouse" target="_blank" class="hover:underline">victorypawshouse</a>
+                <a href="https://instagram.com/victorypawshouse" target="_blank" class="hover:underline">@victorypawshouse</a>
                 <img src="{{ asset('images/logo_wa.png') }}" alt="wa" class="w-5 h-5">
                 <span> 08111511050</span>
             </div>
@@ -77,7 +77,7 @@
                                 text-gray-700 hover:text-gray-900 
                             @endif">Layanan</a>
                 <a href="#" class="text-gray-700 hover:text-gray-900">Katalog</a>
-                <a href="#" class="text-gray-700 hover:text-gray-900">Booking</a>
+                <a href="{{ route('booking.index') }}" class="text-gray-700 hover:text-gray-900">Booking</a>
                 <a href="#" class="text-gray-700 hover:text-gray-900">Event</a>
             </div>
         </div>
