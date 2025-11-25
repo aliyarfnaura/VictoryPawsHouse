@@ -9,7 +9,7 @@ class DetailBooking extends Model
 {
     use HasFactory;
 
-    protected $table = 'detail_booking';
+    protected $table = 'detail_booking';    
     protected $primaryKey = 'id_detail';
 
     protected $fillable = [
@@ -23,4 +23,6 @@ class DetailBooking extends Model
     {
         return $this->belongsTo(Layanan::class, 'id_layanan', 'id_layanan');
     }
+
+    
 }

@@ -10,25 +10,25 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('events', function (Blueprint $table) {
-        $table->id(); // atau $table->id('id_event'); jika ingin konsisten
+    {
+        Schema::create('events', function (Blueprint $table) {
+            $table->id('id_event'); // atau $table->id('id_event'); jika ingin konsisten
 
-        // === FOREIGN KEY ID_ADMIN ===
-        // 1. Buat kolom 'id_admin'
-        // 2. Sambungkan ke 'id_pengguna' di tabel 'pengguna'
-        $table->foreignId('id_admin')
-              ->references('id_pengguna')->on('pengguna')
-              ->onDelete('cascade'); 
+            // === FOREIGN KEY ID_ADMIN ===
+            // 1. Buat kolom 'id_admin'
+            // 2. Sambungkan ke 'id_pengguna' di tabel 'pengguna'
+            $table->foreignId('id_admin')
+                ->references('id_pengguna')->on('pengguna')
+                ->onDelete('cascade');
 
-        $table->string('nama_event')->nullable();
-        $table->text('deskripsi')->nullable();
-        $table->string('lokasi')->nullable();
-        $table->date('tanggal')->nullable();
-        $table->string('gambar')->nullable();
-        $table->timestamps();
-    });
-}
+            $table->string('nama_event')->nullable();
+            $table->text('deskripsi')->nullable();
+            $table->string('lokasi')->nullable();
+            $table->date('tanggal')->nullable();
+            $table->string('gambar')->nullable();
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

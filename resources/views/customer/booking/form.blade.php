@@ -353,7 +353,7 @@
 
             <button type="button" onclick="closeModal()" class="mt-4 block w-full text-gray-500 text-center text-sm font-medium hover:text-[#6b4423] hover:underline py-2 transition-colors">
                 @if(session('total_bayar') > 0)
-                Nanti Saja, Saya Bayar Nanti
+                Nanti Saja, Saya Bayar Cash (Di Tempat)
                 @else
                 Tutup
                 @endif

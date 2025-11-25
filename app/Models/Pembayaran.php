@@ -8,31 +8,23 @@ use Illuminate\Database\Eloquent\Model;
 class Pembayaran extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'pembayaran';
     protected $primaryKey = 'id_pembayaran';
 
-    public $timestamps = false;
-    
+    // Konfigurasi Created At custom (Sesuai diskusi kita sebelumnya)
+    const CREATED_AT = 'tanggal_pembayaran';
+    const UPDATED_AT = 'updated_at';
+
     protected $fillable = [
-        'id_booking', 
-        'id_transaksi',
+        'id_booking',
+        'metode',       // <--- PASTIKAN INI ADA
         'bukti_gambar',
         'tanggal_pembayaran',
-    ];
-
-    protected $casts = [
-        'tanggal_pembayaran' => 'datetime',
     ];
 
     public function booking()
     {
         return $this->belongsTo(Booking::class, 'id_booking', 'id_booking');
-    }
-    
-    public function transaksi()
-    {
-        // Relasi ke TransaksiProduk (meski namanya ambigu, ini mewakili transaksi umum)
-        return $this->belongsTo(TransaksiProduk::class, 'id_transaksi', 'id_transaksi');
     }
 }

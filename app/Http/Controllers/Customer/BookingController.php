@@ -241,7 +241,7 @@ class BookingController extends Controller
             if ($request->hasFile('bukti_gambar')) {
                 $file = $request->file('bukti_gambar');
                 $namaFile = time() . '_' . $file->getClientOriginalName();
-
+                $booking = Booking::find($request->id_booking);
                 // Pindahkan file
                 $file->move(public_path('uploads/pembayaran'), $namaFile);
 
@@ -249,6 +249,7 @@ class BookingController extends Controller
                 Pembayaran::create([
                     'id_booking'         => $request->id_booking,
                     'bukti_gambar'       => $namaFile,
+                    'metode'             => $booking->metode_pembayaran ?? 'Transfer',
                     'tanggal_pembayaran' => now(),
                 ]);
 
