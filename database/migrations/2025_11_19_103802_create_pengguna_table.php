@@ -15,7 +15,6 @@ return new class extends Migration
         $table->id('id_pengguna');
         $table->string('username');
         $table->string('email')->unique();
-        $table->string('no_telp', 15)->nullable();
         $table->string('password');
         $table->enum('role', ['admin', 'pelanggan'])->default('pelanggan');
         $table->timestamps();

@@ -1,13 +1,5 @@
 <h2 class="text-3xl font-extrabold text-[#6b4423] mb-8">ULASAN & PENILAIAN</h2>
 
-{{-- Pesan Sukses --}}
-@if(session('success'))
-    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded shadow-sm relative">
-        {{ session('success') }}
-        <button onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-green-700 font-bold">&times;</button>
-    </div>
-@endif
-
 <div class="space-y-12">
 
     <div>

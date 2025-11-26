@@ -19,21 +19,6 @@ class LayananSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        $existingUser = DB::table('pengguna')->where('email', 'pembimbing@gmail.com')->first();
-
-    if (!$existingUser) {
-        $userId = DB::table('pengguna')->insertGetId([
-            'username' => 'pembimbing_erikamaulidiya',
-            'email' => 'pembimbing@gmail.com',
-            'password' => bcrypt('inipassword123'),
-            'role' => 'admin',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-    } else {
-        $userId = $existingUser->id_pengguna;
-    }
-
         DB::table('layanan')->insert([
             [
                 'id_pengguna' => $userId, 

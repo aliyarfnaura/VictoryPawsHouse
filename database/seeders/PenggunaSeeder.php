@@ -14,6 +14,15 @@ class PenggunaSeeder extends Seeder
     public function run(): void
     {
         DB::table('pengguna')->insert([
+            'username'   => 'adminvph',
+            'email'      => 'admin@gmail.com',
+            'password'   => Hash::make('adminbro'), 
+            'role'       => 'admin',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('pengguna')->insert([
             'username'   => 'pembimbing_erikamaulidiya',
             'email'      => 'pembimbing@gmail.com', // Email login
             'password'   => Hash::make('inipassword123'), // Password login (Hash::make agar aman)

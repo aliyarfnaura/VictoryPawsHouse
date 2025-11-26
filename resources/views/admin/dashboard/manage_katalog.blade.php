@@ -21,10 +21,10 @@
                         <div class="grid grid-cols-1 md:grid-cols-12 items-center gap-4">
 
                             <div class="flex items-center space-x-3 md:col-span-4">
-                                <img src="{{ asset('storage/' . $product->gambar) }}"
+                                {{-- FIX: Gunakan asset('storage/') --}}
+                                <img src="{{ $product->gambar ? asset('storage/' . $product->gambar) : 'https://placehold.co/80x80/f5e8d0/6b4423?text=P' }}"
                                     alt="{{ $product->nama_produk }}"
-                                    class="w-12 h-12 object-cover rounded-full"
-                                    onerror="this.onerror=null; this.src='https://placehold.co/80x80/f5e8d0/6b4423?text=P'">
+                                    class="w-12 h-12 object-cover rounded-full">
 
                                 <div>
                                     <p class="font-semibold text-gray-900 leading-tight">
@@ -76,8 +76,8 @@
             </ul>
         </div>
         
+        {{-- KOLOM KANAN: FORM TAMBAH/EDIT PRODUK --}}
         <div class="lg:col-span-1 bg-[#fcf8f0] p-6 rounded-xl shadow-lg border border-gray-200 lg:sticky lg:top-0">
-            {{-- Form sudah menangani Create dan Edit dengan variabel $productToEdit --}}
             <h2 class="text-xl font-extrabold text-grey-800 border-b pb-2 mb-4">
                 {{ $productToEdit ? 'Edit Produk' : 'Tambah Produk Baru' }}
             </h2>
@@ -92,14 +92,14 @@
                 <div class="mb-4">
                     <label for="nama_produk" class="block text-sm font-semibold text-gray-700 mb-1">Nama Produk</label>
                     <input type="text" name="nama_produk" id="nama_produk" value="{{ old('nama_produk', $productToEdit->nama_produk ?? '') }}" 
-                           class="w-full border-gray-300 rounded-lg p-3">
+                            class="w-full border-gray-300 rounded-lg p-3">
                     @error('nama_produk') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 
                 <div class="mb-4">
                     <label for="harga" class="block text-sm font-semibold text-gray-700 mb-1">Harga Produk</label>
                     <input type="number" name="harga" id="harga" value="{{ old('harga', $productToEdit->harga ?? '') }}" step="1000"
-                           class="w-full border-gray-300 rounded-lg p-3">
+                            class="w-full border-gray-300 rounded-lg p-3">
                     @error('harga') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 
@@ -113,10 +113,13 @@
                 <div class="mb-6">
                     <label for="gambar" class="block text-sm font-semibold text-gray-700 mb-1">Upload Foto Produk</label>
                     @if ($productToEdit && $productToEdit->gambar)
-                        <img src="{{ asset('storage/' . $product->gambar) }}" alt="{{ $product->nama_produk }}" 
+                        <p class="text-sm text-gray-500 mb-2">Foto Saat Ini:</p>
+                        <img src="{{ asset('storage/' . $productToEdit->gambar) }}" 
+                            alt="{{ $productToEdit->nama_produk }}" 
+                            class="w-20 h-20 object-cover rounded-lg mb-3 border border-gray-300">
                     @endif
                     <input type="file" name="gambar" id="gambar" accept="image/*"
-                           class="w-full border-gray-300 rounded-lg p-3 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                            class="w-full border-gray-300 rounded-lg p-3 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                     @error('gambar') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 
@@ -125,8 +128,8 @@
                          <a href="{{ route('admin.katalog.index') }}" class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition">Batal</a>
                      @endif
                      <button type="submit" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition">
-                        {{ $productToEdit ? 'Update Produk' : 'Tambah Produk' }}
-                    </button>
+                         {{ $productToEdit ? 'Update Produk' : 'Tambah Produk' }}
+                     </button>
                 </div>
             </form>
         </div>
