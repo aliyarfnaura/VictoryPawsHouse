@@ -20,6 +20,7 @@ return new class extends Migration
 
         $table->string('nama_produk');
         $table->text('deskripsi')->nullable();
+        $table->decimal('harga', 10, 2)->default(0);
         $table->string('gambar')->nullable();
         $table->timestamps();
     });

@@ -11,18 +11,19 @@ class Pengguna extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $table = 'pengguna';       // Nama tabel
-    protected $primaryKey = 'id_pengguna'; // Primary Key Custom
+    protected $table = 'pengguna';
+
+    protected $primaryKey = 'id_pengguna';
 
     /**
      * Daftar kolom yang boleh diisi (Mass Assignable)
      */
     protected $fillable = [
-        'username', // Pastikan ini username, bukan name
+        'username',
         'email',
+        'no_telp',
         'password',
-        'role',
-        'no_telp',  // <--- Tambahan baru
+        'role', 
     ];
 
     protected $hidden = [

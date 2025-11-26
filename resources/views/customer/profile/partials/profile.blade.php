@@ -2,7 +2,7 @@
 
 <form method="POST" action="{{ route('profile.update') }}">
     @csrf
-    @method('PUT')
+    @method('patch')
 
     <div class="grid grid-cols-2 gap-x-8 gap-y-4">
 
@@ -21,17 +21,12 @@
                 class="w-full border-gray-300 rounded-lg shadow-sm p-3 mt-1">
             @error('email') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
-
-        {{-- Phone Number (Asumsi field ada di Model Pengguna) --}}
+        
+        {{-- Phone Number --}}
         <div>
             <label for="no_telp" class="block text-sm font-semibold text-gray-700">Nomor HP</label>
-
-            {{-- Perhatikan name, id, dan value diganti jadi 'no_telp' --}}
-            <input type="text" name="no_telp" id="no_telp"
-                value="{{ old('no_telp', $user->no_telp) }}"
-                class="w-full border-gray-300 rounded-lg shadow-sm p-3 mt-1"
-                placeholder="Contoh: 08123456789">
-
+            <input type="text" name="no_telp" id="no_telp" value="{{ old('no_telp', $user->no_telp) }}" 
+                   class="w-full border-gray-300 rounded-lg shadow-sm p-3 mt-1">
             @error('no_telp') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
     </div>

@@ -8,14 +8,23 @@
 </head>
 
 <body class="font-sans antialiased bg-gray-100">
-    @include('partials.adminHeader')
+    @include('includes.adminHeader')
 
     <div class="min-h-screen flex">
-        <div class="w-64 bg-[#AF8F6F] text-white flex flex-col py-6 px-4">
-            <div class="p-6 text-center border-b border-gray-700">
-                <h1 class="text-xl font-extrabold text-white-400 tracking-wide">DASHBOARD ADMIN</h1>
+
+        <div id="sidebar" 
+             class="w-64 bg-[#AF8F6F] text-white flex flex-col py-6 px-4
+             fixed inset-y-0 left-0 transform -translate-x-full transition-transform duration-300 z-50
+             lg:static lg:translate-x-0">
+
+            <div class="p-6 text-center border-b border-gray-700 flex justify-between items-center">
+                <h1 class="text-xl font-extrabold tracking-wide">DASHBOARD ADMIN</h1>
+
+                <button id="closeSidebar" class="lg:hidden text-white text-2xl">
+                    &times;
+                </button>
             </div>
-            
+
             <nav class="flex-grow p-4 space-y-2">
                 @php
                     $navItems = [
@@ -32,13 +41,13 @@
                 @foreach ($navItems as $key => $item)
                     @php
                         $isActive = (Str::contains($currentRoute, $key) && $key !== 'grafik') 
-                            || ($currentRoute === 'admin.dashboard' && $key === 'grafik');
+                                || ($currentRoute === 'admin.dashboard' && $key === 'grafik');
                     @endphp
                     
-                    <a href="{{ route($item[1]) }}" 
+                    <a href="{{ route($item[1]) }}"
                        class="flex items-center space-x-3 p-3 rounded-lg transition duration-200
                        @if ($isActive)
-                            !bg-[#543310] text-white shadow-none font-semibold
+                            !bg-[#543310] text-white font-semibold
                        @else
                             hover:bg-[#8b6a4b]
                        @endif">
@@ -48,7 +57,15 @@
             </nav>
         </div>
 
+        <div id="overlay" class="fixed inset-0 bg-black bg-opacity-40 hidden z-40 lg:hidden"></div>
+
         <div class="flex-1 flex flex-col overflow-hidden">
+
+            <button id="openSidebar"
+                class="lg:hidden p-3 absolute top-4 right-4 bg-[#AF8F6F] text-white rounded-md shadow-md">
+                &#9776;
+            </button>
+
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-[#F8F4E1] p-6">
                 @yield('content')
             </main>
@@ -56,5 +73,26 @@
     </div>
 
     @stack('scripts')
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const openBtn = document.getElementById('openSidebar');
+        const closeBtn = document.getElementById('closeSidebar');
+
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+        }
+
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+
+        openBtn.addEventListener('click', openSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+    </script>
 </body>
 </html>

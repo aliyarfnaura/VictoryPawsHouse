@@ -8,17 +8,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
-use App\Models\Booking;
+use App\Models\Booking; 
 use App\Models\Ulasan;
 
 class ProfileController extends Controller
 {
     public function index(Request $request, $tab = 'profile'): View
     {
-        $user = $request->user();
+        /** @var \App\Models\User $user */
+        $user = $request->user(); 
         $data = [];
 
-        // TAB RIWAYAT: Hanya tampilkan booking
+        if (!in_array($tab, ['profile', 'riwayat', 'ulasan'])) {
+            $tab = 'profile'; 
+        }
+
         if ($tab === 'riwayat') {
             $transactions = Booking::where('id_pengguna', $user->id_pengguna)
                                    ->with(['details.layanan', 'pembayaran']) 
@@ -27,17 +31,14 @@ class ProfileController extends Controller
             $data['transactions'] = $transactions;
         }
 
-        // TAB ULASAN: Pisahkan yang belum diulas dan sudah diulas
         if ($tab === 'ulasan') {
-            // 1. Menunggu Ulasan (Booking Lunas TAPI Belum Ada di Tabel Ulasan)
             $data['pending_reviews'] = Booking::where('id_pengguna', $user->id_pengguna)
-                ->whereIn('status', ['dibayar', 'selesai']) // Status Lunas
-                ->doesntHave('ulasan') // Belum punya ulasan
+                ->whereIn('status', ['dibayar', 'selesai']) 
+                ->doesntHave('ulasan')
                 ->with(['details.layanan'])
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-            // 2. Riwayat Ulasan (Yang sudah ada di tabel Ulasan)
             $data['history_reviews'] = Ulasan::where('id_pengguna', $user->id_pengguna)
                 ->with(['booking.details.layanan'])
                 ->orderBy('created_at', 'desc')
@@ -51,9 +52,7 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Method Edit (Opsional, untuk kompatibilitas route).
-     */
+    //edit
     public function edit(Request $request): View
     {
         return view('profile.edit', [
@@ -63,37 +62,21 @@ class ProfileController extends Controller
 
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-        $request->user()->save();
-        return Redirect::route('profile.index', ['tab' => 'profile'])->with('status', 'profile-updated');
-    }
-
-    /**
-     * Hapus Akun.
-     */
-    public function destroy(Request $request): RedirectResponse
-    {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
-
+        $validatedData = $request->validated();
         $user = $request->user();
 
-        Auth::logout();
+        $user->fill($validatedData);
+        
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
 
-        $user->delete();
+        $user->save();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return Redirect::to('/');
+        return Redirect::route('profile.index', ['tab' => 'profile'])->with('success', 'Profile berhasil diperbarui!');
     }
-
-    // --- CRUD ULASAN ---
-
+    
+    //review
     public function storeReview(Request $request)
     {
         $request->validate([
@@ -101,9 +84,11 @@ class ProfileController extends Controller
             'rating'     => 'required|integer|min:1|max:5',
             'komentar'   => 'nullable|string|max:500',
         ]);
+        
+        $userId = $request->user()->id_pengguna; 
 
         $booking = Booking::where('id_booking', $request->id_booking)
-                          ->where('id_pengguna', Auth::id())
+                          ->where('id_pengguna', $userId) 
                           ->firstOrFail();
 
         if ($booking->ulasan) {
@@ -112,7 +97,7 @@ class ProfileController extends Controller
 
         Ulasan::create([
             'id_booking'  => $booking->id_booking,
-            'id_pengguna' => Auth::id(),
+            'id_pengguna' => $userId, 
             'rating'      => $request->rating,
             'komentar'    => $request->komentar,
         ]);
@@ -126,8 +111,10 @@ class ProfileController extends Controller
             'rating'   => 'required|integer|min:1|max:5',
             'komentar' => 'nullable|string|max:500',
         ]);
+        
+        $userId = $request->user()->id_pengguna;
 
-        $review = Ulasan::where('id_ulasan', $id)->where('id_pengguna', Auth::id())->firstOrFail();
+        $review = Ulasan::where('id_ulasan', $id)->where('id_pengguna', $userId)->firstOrFail();
         $review->update([
             'rating'   => $request->rating,
             'komentar' => $request->komentar,
@@ -136,10 +123,11 @@ class ProfileController extends Controller
         return back()->with('success', 'Ulasan berhasil diperbarui.');
     }
 
-    public function destroyReview($id)
+    public function destroyReview(Request $request, $id)
     {
-        $review = Ulasan::where('id_ulasan', $id)->where('id_pengguna', Auth::id())->firstOrFail();
+        $userId = $request->user()->id_pengguna;
+        $review = Ulasan::where('id_ulasan', $id)->where('id_pengguna', $userId)->firstOrFail();
         $review->delete();
         return back()->with('success', 'Ulasan berhasil dihapus.');
-    }
+        }
 }

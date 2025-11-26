@@ -16,13 +16,11 @@
     </head>
     
    <body class="font-sans antialiased bg-[#fcf8f0]">
-    @include('partials.header')
+    @include('includes.header')
 
     <main>
         @yield('content')
     </main>
-
-    {{-- UNTUK SCRIPT JAVASCRIPT TAMBAHAN --}}
     @stack('scripts')
     </body>
     

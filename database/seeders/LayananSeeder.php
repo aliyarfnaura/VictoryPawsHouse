@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class LayananSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $userId = DB::table('pengguna')->first()->id_pengguna ?? DB::table('pengguna')->insertGetId([
@@ -21,6 +18,21 @@ class LayananSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        $existingUser = DB::table('pengguna')->where('email', 'pembimbing@gmail.com')->first();
+
+    if (!$existingUser) {
+        $userId = DB::table('pengguna')->insertGetId([
+            'username' => 'pembimbing_erikamaulidiya',
+            'email' => 'pembimbing@gmail.com',
+            'password' => bcrypt('inipassword123'),
+            'role' => 'admin',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    } else {
+        $userId = $existingUser->id_pengguna;
+    }
 
         DB::table('layanan')->insert([
             [

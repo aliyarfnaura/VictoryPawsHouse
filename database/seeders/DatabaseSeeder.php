@@ -12,8 +12,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Hapus bagian User::factory yang error
-        // Panggil Seeder layanan Anda di sini
         $this->call([
             PenggunaSeeder::class,
             LayananSeeder::class,

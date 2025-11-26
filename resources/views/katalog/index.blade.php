@@ -11,7 +11,6 @@
             <p class="mt-1 text-xl text-gray-700">Produk tersedia di offline store kami.</p>
         </header>
 
-        {{-- Logika untuk menampilkan pesan Flash (jika ada) --}}
         @if (session('success'))
             <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-md" role="alert">
                 <p class="font-bold">Sukses!</p>
@@ -19,52 +18,42 @@
             </div>
         @endif
 
-        {{-- Grid Produk --}}
+        @php
+            function formatRupiah($amount) {
+                return 'Rp ' . number_format($amount, 0, ',', '.');
+            }
+        @endphp
+
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
 
-            {{-- Mock Data Produk (Nantinya akan diganti dengan @foreach loop dari Controller) --}}
-            @php
-                $mockProducts = [
-                    ['name' => 'Royal Canine Kucing Adult', 'price' => 150000, 'stock' => 50, 'description' => 'Makanan kering premium untuk kucing dewasa.'],
-                    ['name' => 'Kalung Kutu & Kutu', 'price' => 85000, 'stock' => 25, 'description' => 'Kalung anti kutu yang efektif dan aman.'],
-                    ['name' => 'Mainan Bola Karet Bunyi', 'price' => 30000, 'stock' => 100, 'description' => 'Mainan interaktif yang disukai anjing.'],
-                    ['name' => 'Shampoo Premium Anjing', 'price' => 65000, 'stock' => 40, 'description' => 'Shampoo dengan formula lembut untuk bulu yang berkilau.'],
-                ];
-
-                // Fungsi helper untuk format Rupiah
-                function formatRupiah($amount) {
-                    return 'Rp ' . number_format($amount, 0, ',', '.');
-                }
-            @endphp
-
-            @foreach($mockProducts as $product)
-                {{-- Card Produk --}}
+            @forelse($products as $product)
                 <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden border border-gray-200 flex flex-col">
                     
-                    {{-- Placeholder Gambar --}}
-                    <div class="h-48 bg-[#f5e8d0] flex items-center justify-center">
-                        <span class="text-gray-500 text-lg">Gambar Produk</span>
+                    <div class="h-48 bg-[#f5e8d0] flex items-center justify-center relative">
+                        <img src="{{ asset('storage/' . $product->gambar) }}" alt="{{ $product->nama_produk }}" 
+                             class="w-full h-full object-cover" 
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x192/f5e8d0/6b4423?text=Gambar+Produk'">
                     </div>
 
                     <div class="p-5 flex flex-col flex-grow">
-                        {{-- Nama Produk --}}
-                        <h2 class="text-xl font-bold text-gray-900 truncate mb-2">{{ $product['name'] }}</h2>
+                        <h2 class="text-xl font-bold text-gray-900 truncate mb-2">{{ $product->nama_produk }}</h2>
                         
-                        {{-- Deskripsi Singkat --}}
-                        <p class="text-gray-600 text-sm mb-3 flex-grow">{{ $product['description'] }}</p>
+                        <p class="text-gray-600 text-sm mb-3 flex-grow">{{ $product->deskripsi }}</p>
 
-                        {{-- Harga --}}
                         <div class="flex justify-between items-center mt-3">
                             <span class="text-2xl font-extrabold text-[#6b4423]">
-                                {{ formatRupiah($product['price']) }}
+                                {{ formatRupiah($product->harga) }}
                             </span>
                         </div>
                     </div>
                 </div>
-            @endforeach
-            
+            @empty
+                <div class="col-span-full text-center py-10">
+                    <p class="text-xl text-gray-500">Belum ada produk yang tersedia saat ini.</p>
+                    <p class="text-sm text-gray-600">Admin dapat menambahkan produk melalui Dashboard Admin.</p>
+                </div>
+            @endforelse
         </div>
-        {{-- Akhir Grid Produk --}}
 
     </div>
 @endsection

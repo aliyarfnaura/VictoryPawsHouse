@@ -7,6 +7,11 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+    background-color: #F8F4E1;
+}
+
+
 .bg-custom-brown {
     background-color: #61481C;
 }
@@ -36,22 +41,18 @@
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
-/* Warna Coklat Muda untuk Latar Belakang Form */
 .bg-form-light {
     background-color: #C0A880;
 }
 
-/* Warna Krem Sangat Terang untuk Latar Belakang Branding */
 .bg-branding-light {
     background-color: #F7F3E8;
 }
 
-/* Warna Placeholder Input Form */
 .input-placeholder-custom::placeholder {
-    color: #4A4A4A; /* Abu-abu gelap agar kontras */
+    color: #4A4A4A; 
 }
 
-/* Memastikan font konsisten */
 :root {
     --font-sans: ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';

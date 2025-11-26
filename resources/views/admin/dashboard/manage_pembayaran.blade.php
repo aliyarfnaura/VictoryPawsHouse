@@ -118,7 +118,7 @@
                                 <button type="submit" class="w-full bg-red-50 text-red-700 hover:bg-red-600 hover:text-white font-bold py-2 px-4 rounded-lg transition text-center text-sm">Tolak</button>
                             </form>
                         @else
-                            <button onclick="openUploadModal({{ $payment->id_pembayaran }}, '#{{ $payment->id_booking }} - {{ $payment->booking->nama }}')" 
+                           <button onclick="openUploadModal('{{ $payment->id_pembayaran }}', '{{ e($payment->id_booking . ' - ' . $payment->booking->nama) }}')"
                                     class="w-full bg-[#6b4423] text-white hover:bg-[#54361c] font-bold py-2 px-4 rounded-lg transition shadow-md text-sm">
                                 Upload Bukti
                             </button>

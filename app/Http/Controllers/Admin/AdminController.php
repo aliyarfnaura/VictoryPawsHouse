@@ -10,6 +10,9 @@ use App\Models\Ulasan;
 use App\Models\Produk;
 use App\Models\Event;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
 
 class AdminController extends Controller
 {
@@ -187,13 +190,121 @@ class AdminController extends Controller
     }
 
     // --- METHOD LAIN (Katalog, Event, Ulasan) ---
-    public function manageKatalog() {
+        public function manageKatalog($id_produk = null)
+    {
         $products = Produk::orderBy('created_at', 'desc')->get();
-        return view('admin.dashboard.manage_katalog', compact('products'));
+        
+        $productToEdit = null;
+        if ($id_produk) {
+            $productToEdit = Produk::findOrFail($id_produk);
+        }
+        return view('admin.dashboard.manage_katalog', compact('products', 'productToEdit'));
     }
-    public function manageEvent() {
-        $events = Event::orderBy('tanggal', 'desc')->get();
-        return view('admin.dashboard.manage_event', compact('events'));
+    
+    /**
+     * Menyimpan Produk Baru atau Mengupdate Produk yang Sudah Ada.
+     */
+    public function storeUpdateKatalog(Request $request, $id_produk = null)
+{
+    $isUpdate = (bool)$id_produk;
+    
+    $request->validate([
+        'nama_produk' => ['required', 'string', 'max:255'],
+        'deskripsi' => ['required', 'string'],
+        'harga' => ['required', 'numeric', 'min:0'],
+        'gambar' => [$isUpdate ? 'nullable' : 'required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+    ]);
+
+    $data = $request->only(['nama_produk', 'deskripsi', 'harga']);
+    
+    if ($request->hasFile('gambar')) {
+        // Simpan ke storage dengan disk 'public'
+        $gambarPath = $request->file('gambar')->store('produk', 'public');
+        $data['gambar'] = $gambarPath; // Hasil: 'produk/filename.jpg'
+    }
+
+    if ($isUpdate) {
+        $product = Produk::findOrFail($id_produk);
+        
+        // Hapus gambar lama jika upload gambar baru
+        if (isset($data['gambar']) && $product->gambar) {
+            Storage::disk('public')->delete($product->gambar);
+        }
+        
+        $product->update($data);
+        $message = 'Produk berhasil diperbarui!';
+    } else {
+        $data['id_admin'] = Auth::user()->id_pengguna; 
+        Produk::create($data);
+        $message = 'Produk baru berhasil ditambahkan!';
+    }
+
+    return redirect()->route('admin.katalog.index')->with('success', $message);
+}
+
+public function destroyKatalog($id_produk)
+{
+    $product = Produk::findOrFail($id_produk);
+    
+    // Hapus file gambar dari storage
+    if ($product->gambar) {
+        Storage::disk('public')->delete($product->gambar);
+    }
+    
+    $product->delete();
+    
+    return redirect()->route('admin.katalog.index')->with('success', 'Produk berhasil dihapus!');
+}
+    
+    /**
+     * Menampilkan Manajemen Event (Halaman 5 - CRUD Event).
+     */
+    public function manageEvent($id_event = null)
+    {
+        $events = Event::orderBy('tanggal', 'asc')->get();
+        
+        $eventToEdit = null;
+        if ($id_event) {
+            $eventToEdit = Event::findOrFail($id_event);
+        }
+
+        return view('admin.dashboard.manage_event', compact('events', 'eventToEdit'));
+    }
+
+    public function storeUpdateEvent(Request $request, $id_event = null)
+    {
+        $isUpdate = (bool)$id_event;
+        
+        $request->validate([
+            'nama_event' => 'required|string|max:255',
+            'tanggal' => 'required|date_format:Y-m-d\TH:i|after_or_equal:now',
+            'lokasi'     => 'required|string|max:255',
+            'deskripsi'  => 'required|string',
+        ]);
+
+        $data = $request->only(['nama_event', 'tanggal', 'lokasi', 'deskripsi']);
+
+        $data['tanggal'] = \Carbon\Carbon::parse($request->tanggal);
+
+        if ($isUpdate) {
+            $event = Event::findOrFail($id_event);
+            $event->update($data);
+            $message = 'Event berhasil diperbarui!';
+        } else {
+            $data['id_admin'] = Auth::user()->id_pengguna ?? null;
+            Event::create($data);
+            $message = 'Event baru berhasil ditambahkan!';
+        }
+
+        return redirect()->route('admin.event.index')->with('success', $message);
+    }
+
+    public function destroyEvent($id_event)
+    {
+        $event = Event::findOrFail($id_event);
+        $event->delete();
+        
+        return redirect()->route('admin.event.index')->with('success', 'Event berhasil dihapus!');
     }
     public function manageUlasan()
     {

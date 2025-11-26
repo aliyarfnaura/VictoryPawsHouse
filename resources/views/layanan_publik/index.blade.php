@@ -49,7 +49,6 @@
             </div>
         </div>
 
-        <!-- Bagian Bawah: Event dan Produk -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
             
             {{-- 4. Pet Exhibition (Event) --}}
@@ -68,7 +67,7 @@
 
             {{-- 5. Pet Supplies (Produk) --}}
             <div class="bg-white rounded-xl shadow-xl overflow-hidden border-2 border-gray-100 flex flex-col transform hover:scale-[1.02] transition duration-300">
-                <img src="{{ asset($produk_display->gambar ?? 'images/placeholder_supplies.jpg') }}" alt="Pet Supplies" class="w-full h-64 object-cover">
+                <img src="{{ asset('images/placeholder_supplies.jpg') }}" alt="Pet Supplies" class="w-full h-64 object-cover">
                 <div class="p-6 flex-grow text-center">
                     <h3 class="text-xl font-bold text-custom-brown mb-2">Pet Supplies</h3>
                     <p class="text-sm text-gray-600 mb-4">

@@ -5,7 +5,7 @@
 @section('content')
 <div class="bg-[#F8F4E1] shadow max-w-8xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
 
-    <div class="bg-[#F8F3D9] rounded-xl shadow-2xl overflow-hidden md:grid md:grid-cols-3">
+    <div class="bg-[#e7d4b4] rounded-xl shadow-2xl overflow-hidden md:grid md:grid-cols-3">
 
         <div class="md:col-span-2 p-8 md:p-12">
             <h2 class="text-3xl font-extrabold text-[#6b4423] mb-6">Select Service(s)</h2>
@@ -14,7 +14,6 @@
             <form action="{{ route('booking.store') }}" method="POST" id="booking-form">
                 @csrf
 
-                {{-- Pesan Error Validasi Umum --}}
                 @if ($errors->any())
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6">
                     <strong class="font-bold">Gagal Booking!</strong>
@@ -146,6 +145,7 @@
                     {{-- Catatan --}}
                     <div class="col-span-1 md:col-span-2">
                         <label for="catatan" class="block text-sm font-bold text-[#6b4423] mb-1">Catatan</label>
+                        <label for="catatan" class="block text-sm font-regular text-[#6b4423] mb-1">*Jika memesan layanan home service, WAJIB mengisi alamat lengkap di catatan</label>
                         <textarea name="catatan" id="catatan" rows="3"
                             class="w-full border-gray-300 rounded-lg shadow-sm p-3 focus:ring-[#6b4423] focus:border-[#6b4423] placeholder-gray-400"
                             placeholder="Contoh: Hewan saya memiliki alergi kulit, mohon hati-hati di bagian kaki kanan, alamat lengkap, etc"></textarea>
