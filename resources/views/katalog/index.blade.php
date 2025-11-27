@@ -50,7 +50,6 @@
             @empty
                 <div class="col-span-full text-center py-10">
                     <p class="text-xl text-gray-500">Belum ada produk yang tersedia saat ini.</p>
-                    <p class="text-sm text-gray-600">Admin dapat menambahkan produk melalui Dashboard Admin.</p>
                 </div>
             @endforelse
         </div>
