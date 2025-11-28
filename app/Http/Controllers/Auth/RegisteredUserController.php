@@ -31,7 +31,7 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'username' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:20'],
             'email' => [
                 'required', 
                 'string', 
@@ -45,11 +45,10 @@ class RegisteredUserController extends Controller
                     if (preg_match('/[A-Z]/', $value)) {
                         $fail('*Email harus menggunakan huruf kecil semua.');
                     }
-                },
-                // 2. Tidak boleh ada Tanda Strip (-)
-                function ($attribute, $value, $fail) {
-                    if (str_contains($value, '-')) {
-                        $fail('*Email tidak boleh mengandung tanda strip (-).');
+                // 2. Cek Karakter Terlarang (Selain a-z, 0-9, . dan @)
+                    // Jika ada karakter SELAIN yang diizinkan, maka error.
+                    if (!preg_match('/^[a-z0-9.@]+$/', $value)) {
+                        $fail('*Email tidak boleh mengandung simbol (seperti -, _, +, dll) selain titik.');
                     }
                 },
             ],
