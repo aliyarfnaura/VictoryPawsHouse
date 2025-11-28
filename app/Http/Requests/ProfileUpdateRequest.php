@@ -11,7 +11,7 @@ class ProfileUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:20'],
             
             'email' => [
                 'required', 
@@ -24,7 +24,7 @@ class ProfileUpdateRequest extends FormRequest
             ],
 
             // Validasi No Telp: Boleh kosong, Maks 20 digit, Format angka/plus/spasi
-            'no_telp' => ['nullable', 'string', 'max:20', 'regex:/^[0-9+\-\s]+$/'],
+            'no_telp' => ['nullable', 'string', 'digits_between:10,15', 'regex:/^[0-9+\-\s]+$/'],
         ];
     }
 }

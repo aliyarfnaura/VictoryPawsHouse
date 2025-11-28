@@ -35,11 +35,8 @@ class LoginRequest extends FormRequest
                     if (preg_match('/[A-Z]/', $value)) {
                         $fail('*Email harus menggunakan huruf kecil semua.');
                     }
-                },
-                // Mencegah tanda strip
-                function ($attribute, $value, $fail) {
-                    if (str_contains($value, '-')) {
-                        $fail('*Email tidak valid (mengandung strip).');
+                    if (!preg_match('/^[a-z0-9.@]+$/', $value)) {
+                        $fail('*Email tidak boleh mengandung simbol (seperti -, _, +, dll) selain titik.');
                     }
                 },
             ],

@@ -122,14 +122,14 @@ class BookingController extends Controller
             'nama_anda'         => [
                 'required', 
                 'string', 
-                'max:255', 
+                'max:20', 
                 'regex:/^(?!.*(.)\1{3,}).+$/'
             ],
             
             'nama_hewan'        => [
                 'required', 
                 'string', 
-                'max:255', 
+                'max:20', 
                 'regex:/^(?!.*(.)\1{3,}).+$/'
             ],
 
@@ -150,7 +150,7 @@ class BookingController extends Controller
             'jenis_hewan'       => ['required', 'string'],
             'gender_hewan'      => ['required', 'in:Jantan,Betina'],
             'jadwal'            => ['required', 'date'],
-            'jadwal_checkout'   => $ruleCheckout, // String rules sederhana masih boleh pakai pipe |, tapi di sini variabel
+            'jadwal_checkout'   => $ruleCheckout,
             'jam_booking'       => $ruleJam,
             'metode_pembayaran' => ['required', 'string'],
             'total_harga'       => ['required', 'numeric'],
