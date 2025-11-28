@@ -209,10 +209,17 @@ class AdminController extends Controller
     $isUpdate = (bool)$id_produk;
     
     $request->validate([
-        'nama_produk' => ['required', 'string', 'max:255'],
-        'deskripsi' => ['required', 'string'],
-        'harga' => ['required', 'numeric', 'min:0'],
+        'nama_produk' => ['required', 'string', 'max:255', 'regex:/^(?!.*(.)\1{3,}).+$/'],
+        'deskripsi' => ['required', 'string', 'max:500', 'regex:/^(?!.*(.)\1{3,}).+$/'],
+        'harga' => ['required', 'numeric', 'min:1', 'not_in:0'],
         'gambar' => [$isUpdate ? 'nullable' : 'required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+    ],
+    [
+        // Custom Pesan Error (Opsional)
+        'nama_produk.regex' => 'Nama produk tidak boleh mengandung karakter berulang yang berlebihan (spam).',
+        'harga.min' => 'Harga produk tidak boleh 0 atau kosong, harap masukkan nominal yang valid.',
+        'harga.not_in' => 'Harga produk tidak boleh bernilai 0.',
+        'deskripsi.regex' => 'Keterangan produk tidak boleh mengandung karakter berulang yang berlebihan (spam).',
     ]);
 
     $data = $request->only(['nama_produk', 'deskripsi', 'harga']);
@@ -276,11 +283,17 @@ public function destroyKatalog($id_produk)
         $isUpdate = (bool)$id_event;
         
         $request->validate([
-            'nama_event' => 'required|string|max:255',
+            'nama_event' => 'required|string|max:255|regex:/^(?!.*(.)\1{3,}).+$/',
             'tanggal' => 'required|date_format:Y-m-d\TH:i|after_or_equal:now',
-            'lokasi'     => 'required|string|max:255',
-            'deskripsi'  => 'required|string',
-        ]);
+            'lokasi'     => 'required|string|max:255|regex:/^(?!.*(.)\1{3,}).+$/',
+            'deskripsi'  => 'required|string|max:500|regex:/^(?!.*(.)\1{3,}).+$/',
+        ],
+        [
+        // Custom Pesan Error (Opsional)
+        'nama_event.regex' => 'Nama event tidak boleh mengandung karakter berulang yang berlebihan (spam).',
+        'lokasi.regex' => 'Lokasi event tidak boleh mengandung karakter berulang yang berlebihan (spam).',
+        'deskripsi.regex' => 'Deskripsi event tidak boleh mengandung karakter berulang yang berlebihan (spam).',
+    ]);
 
         $data = $request->only(['nama_event', 'tanggal', 'lokasi', 'deskripsi']);
 

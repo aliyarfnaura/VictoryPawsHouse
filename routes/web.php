@@ -10,7 +10,6 @@ use App\Http\Controllers\EventPublikController;
 use App\Http\Controllers\UlasanPublikController;
 use App\Http\Controllers\Admin\AdminController;
 
-
 Route::get('/', fn() => view('welcome'))->name('home');
 Route::get('/layanan', [LayananPublikController::class, 'index'])->name('layanan.publik.index');
 Route::get('/katalog', [KatalogController::class, 'index'])->name('katalog.index');

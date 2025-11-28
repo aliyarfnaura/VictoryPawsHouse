@@ -21,21 +21,34 @@ class LoginRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'email' => [
+                'required', 
+                'string', 
+                'email',
+                // --- VALIDASI TAMBAHAN LOGIN ---
+                // Mencegah user login pakai huruf besar (biar konsisten)
+                function ($attribute, $value, $fail) {
+                    if (preg_match('/[A-Z]/', $value)) {
+                        $fail('*Email harus menggunakan huruf kecil semua.');
+                    }
+                },
+                // Mencegah tanda strip
+                function ($attribute, $value, $fail) {
+                    if (str_contains($value, '-')) {
+                        $fail('*Email tidak valid (mengandung strip).');
+                    }
+                },
+            ],
             'password' => ['required', 'string'],
         ];
     }
 
     /**
      * Attempt to authenticate the request's credentials.
-     *
-     * @throws \Illuminate\Validation\ValidationException
      */
     public function authenticate(): void
     {
@@ -54,8 +67,6 @@ class LoginRequest extends FormRequest
 
     /**
      * Ensure the login request is not rate limited.
-     *
-     * @throws \Illuminate\Validation\ValidationException
      */
     public function ensureIsNotRateLimited(): void
     {

@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
-use Illuminate\View\View; 
+use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
@@ -32,7 +32,27 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'username' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.Pengguna::class],
+            'email' => [
+                'required', 
+                'string', 
+                'email', 
+                'max:255', 
+                'unique:'.Pengguna::class,
+                
+                // --- VALIDASI TAMBAHAN  ---
+                // 1. Tidak boleh ada Huruf Besar
+                function ($attribute, $value, $fail) {
+                    if (preg_match('/[A-Z]/', $value)) {
+                        $fail('*Email harus menggunakan huruf kecil semua.');
+                    }
+                },
+                // 2. Tidak boleh ada Tanda Strip (-)
+                function ($attribute, $value, $fail) {
+                    if (str_contains($value, '-')) {
+                        $fail('*Email tidak boleh mengandung tanda strip (-).');
+                    }
+                },
+            ],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -47,7 +67,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        // KOREKSI: Redirect ke HOME (yaitu '/')
-        return redirect(RouteServiceProvider::HOME); 
+        // Redirect ke Dashboard User (Sesuai alur aplikasi Anda)
+        return redirect()->route('dashboard'); 
     }
 }

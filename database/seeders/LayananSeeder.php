@@ -23,7 +23,7 @@ class LayananSeeder extends Seeder
             [
                 'id_pengguna' => $userId, 
                 'nama_layanan' => 'Pet Grooming',
-                'harga' => 50000, 
+                'harga' => 150000, 
                 'gambar' => 'grooming.png',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -31,7 +31,7 @@ class LayananSeeder extends Seeder
             [
                 'id_pengguna' => $userId, 
                 'nama_layanan' => 'Pet Hotel',
-                'harga' => 35000, 
+                'harga' => 55000, 
                 'gambar' => 'hotel.png',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -39,7 +39,7 @@ class LayananSeeder extends Seeder
             [
                 'id_pengguna' => $userId,
                 'nama_layanan' => 'Home Service',
-                'harga' => 75000, 
+                'harga' => 160000, 
                 'gambar' => 'homeservice.png',
                 'created_at' => now(),
                 'updated_at' => now(),
