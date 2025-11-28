@@ -18,13 +18,14 @@ class ProfileUpdateRequest extends FormRequest
                 'string', 
                 'lowercase', 
                 'email', 
+                'regex:/^[A-Za-z0-9._%+-]+@gmail\.com$/',
                 'max:255', 
                 // Cek unik di tabel 'pengguna', abaikan ID user yang sedang login
                 Rule::unique(Pengguna::class)->ignore($this->user()->id_pengguna, 'id_pengguna'),
             ],
 
             // Validasi No Telp: Boleh kosong, Maks 20 digit, Format angka/plus/spasi
-            'no_telp' => ['nullable', 'string', 'digits_between:10,15', 'regex:/^[0-9+\-\s]+$/'],
+            'no_telp' => ['nullable', 'string', 'digits_between:10,15','regex:/^08[0-9]{8,13}$/'],
         ];
     }
 }

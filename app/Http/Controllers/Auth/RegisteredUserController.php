@@ -36,6 +36,7 @@ class RegisteredUserController extends Controller
                 'required', 
                 'string', 
                 'email', 
+                'regex:/^[A-Za-z0-9._%+-]+@gmail\.com$/',
                 'max:255', 
                 'unique:'.Pengguna::class,
                 
