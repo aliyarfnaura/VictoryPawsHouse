@@ -24,9 +24,9 @@ class PenggunaSeeder extends Seeder
 
         DB::table('pengguna')->insert([
             'username'   => 'pembimbing_erikamaulidiya',
-            'email'      => 'pembimbing@gmail.com', // Email login
-            'password'   => Hash::make('inipassword123'), // Password login (Hash::make agar aman)
-            'role'       => 'admin', // Set role sebagai admin
+            'email'      => 'pembimbing@gmail.com',
+            'password'   => Hash::make('inipassword123'),
+            'role'       => 'admin',
             'created_at' => now(),
             'updated_at' => now(),
         ]);

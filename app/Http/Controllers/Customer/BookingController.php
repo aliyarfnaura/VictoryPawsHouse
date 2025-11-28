@@ -22,7 +22,6 @@ class BookingController extends Controller
         $layanan = Layanan::all();
 
         // 2. LOGIKA KALENDER: Cari tanggal yang sudah dibooking (Full Booked)
-        // Kita cari booking yang statusnya Masih Aktif dan memiliki tanggal checkout (Hotel)
         $existingBookings = Booking::whereNotNull('tanggal_checkout')
             ->whereIn('status', ['pending', 'Pending', 'dibayar', 'Dibayar', 'menunggu_konfirmasi'])
             ->get();
@@ -111,33 +110,72 @@ class BookingController extends Controller
         $ruleCheckout = $isHotel ? 'required|date|after:jadwal' : 'nullable|date';
         $ruleJam = $isGrooming ? 'required' : 'nullable';
         
+        // PERBAIKAN UTAMA ADA DI SINI:
+        // Kita ubah format string 'a|b|c' menjadi Array ['a', 'b', 'c']
+        // Ini wajib dilakukan jika menggunakan regex yang kompleks.
 
         $request->validate([
-            'id_layanan'        => 'required|array',
-            'id_layanan.*'      => 'exists:layanan,id_layanan',
-            'nama_anda'         => 'required|string|max:255',
-            'nama_hewan'        => 'required|string|max:255',
-            'nomor_hp'          => 'required|string|max:20',
-            'jenis_hewan'       => 'required|string',
-            'gender_hewan'      => 'required|in:Jantan,Betina',
-            'jadwal'            => 'required|date',
-            'jadwal_checkout'   => $ruleCheckout,
+            'id_layanan'        => ['required', 'array'],
+            'id_layanan.*'      => ['exists:layanan,id_layanan'],
+            
+            // Validasi Nama: Mencegah huruf berulang > 3 kali (Anti Spam 'aaaaa')
+            'nama_anda'         => [
+                'required', 
+                'string', 
+                'max:255', 
+                'regex:/^(?!.*(.)\1{3,}).+$/'
+            ],
+            
+            'nama_hewan'        => [
+                'required', 
+                'string', 
+                'max:255', 
+                'regex:/^(?!.*(.)\1{3,}).+$/'
+            ],
+
+            // Validasi No HP:
+            // 1. Wajib isi
+            // 2. Harus angka (numeric)
+            // 3. Panjang 10-15 digit
+            // 4. Harus diawali 08 atau 62 (regex)
+            // 5. Tidak boleh isinya angka 0 semua (not_regex)
+            'nomor_hp'          => [
+                'required',
+                'numeric',
+                'digits_between:10,15',
+                'regex:/^(08|62)/', 
+                'not_regex:/^0+$/'
+            ],
+
+            'jenis_hewan'       => ['required', 'string'],
+            'gender_hewan'      => ['required', 'in:Jantan,Betina'],
+            'jadwal'            => ['required', 'date'],
+            'jadwal_checkout'   => $ruleCheckout, // String rules sederhana masih boleh pakai pipe |, tapi di sini variabel
             'jam_booking'       => $ruleJam,
-            'metode_pembayaran' => 'required|string',
-            'total_harga'       => 'required|numeric', // Kita validasi ada, tapi hitung ulang di bawah
-            'catatan'           => 'nullable|string',
+            'metode_pembayaran' => ['required', 'string'],
+            'total_harga'       => ['required', 'numeric'],
+            'catatan'           => ['nullable', 'string'],
+        ], [
+            // --- CUSTOM PESAN ERROR (Bahasa Indonesia) ---
+            'nama_anda.regex'       => 'Nama Anda mengandung huruf berulang yang tidak wajar (Spam).',
+            'nama_hewan.regex'      => 'Nama Hewan mengandung huruf berulang yang tidak wajar (Spam).',
+            
+            'nomor_hp.required'     => 'Nomor HP wajib diisi.',
+            'nomor_hp.numeric'      => 'Nomor HP harus berupa angka saja.',
+            'nomor_hp.digits_between' => 'Panjang Nomor HP harus antara 10 sampai 15 digit.',
+            'nomor_hp.regex'        => 'Nomor HP harus diawali dengan 08 atau 62.',
+            'nomor_hp.not_regex'    => 'Nomor HP tidak valid (tidak boleh angka 0 semua).',
+            
+            'jadwal_checkout.after' => 'Tanggal checkout harus setelah tanggal check-in.',
+            'jam_booking.required'  => 'Jam booking wajib dipilih untuk layanan ini.',
         ]);
 
         try {
             DB::beginTransaction();
 
             // --- TAHAP 3: HITUNG HARGA (SERVER SIDE) ---
-            // Hitung ulang agar aman dari manipulasi frontend
             $totalHargaFix = 0;
-            // Ambil data lagi untuk perhitungan
             $layananDipilih = Layanan::whereIn('id_layanan', $request->id_layanan)->get();
-
-            // Array detail untuk dikirim ke Session Pop-up
             $detailItems = [];
 
             foreach ($layananDipilih as $item) {
@@ -146,7 +184,7 @@ class BookingController extends Controller
                 $namaDetail = $item->nama_layanan;
 
                 if (str_contains(strtolower($item->nama_layanan), 'hotel')) {
-                    // Logika Hotel
+                    // Logika Hotel: Hitung per malam
                     if ($request->jadwal && $request->jadwal_checkout) {
                         $checkin = Carbon::parse($request->jadwal);
                         $checkout = Carbon::parse($request->jadwal_checkout);
@@ -160,7 +198,6 @@ class BookingController extends Controller
 
                 $totalHargaFix += $subTotal;
 
-                // Simpan info detail untuk popup
                 $detailItems[] = [
                     'nama' => $namaDetail,
                     'harga' => $subTotal
@@ -168,7 +205,7 @@ class BookingController extends Controller
             }
 
             // --- TAHAP 4: SIMPAN DATABASE ---
-
+            
             // A. Simpan Booking Induk
             $booking = Booking::create([
                 'id_pengguna'       => Auth::user()->id_pengguna,
@@ -187,7 +224,7 @@ class BookingController extends Controller
                 'durasi'            => $request->jadwal_checkout ? 'Checkout: ' . $request->jadwal_checkout : null,
             ]);
 
-            // B. Simpan Detail Layanan
+            // B. Simpan Detail Booking
             foreach ($layananDipilih as $item) {
                 DB::table('detail_booking')->insert([
                     'id_booking'     => $booking->id_booking,
@@ -207,6 +244,7 @@ class BookingController extends Controller
                 'total_bayar'   => $totalHargaFix,
                 'detail_items'  => $detailItems // Data rincian untuk ditampilkan di modal
             ]);
+            
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
@@ -214,12 +252,10 @@ class BookingController extends Controller
     }
 
     /**
-     * Menampilkan halaman pembayaran (Opsional / Dipanggil dari Pop-up).
+     * Menampilkan halaman pembayaran.
      */
     public function showPayment($id)
     {
-        // Pastikan Anda sudah membuat view 'customer.payment.show'
-        // Dan pastikan relasi di Model Booking sudah benar (metode 'layanan' via detail_booking mungkin butuh penyesuaian di Model)
         $booking = Booking::find($id);
 
         if (!$booking) {
@@ -228,33 +264,36 @@ class BookingController extends Controller
 
         return view('customer.payment.show', compact('booking'));
     }
+
     public function uploadBukti(Request $request)
     {
-        // 1. Validasi File
         $request->validate([
             'id_booking'   => 'required|exists:booking,id_booking',
             'bukti_gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Maks 2MB
         ]);
 
         try {
-            // 2. Simpan Gambar ke Folder 'public/uploads/pembayaran'
             if ($request->hasFile('bukti_gambar')) {
                 $file = $request->file('bukti_gambar');
                 $namaFile = time() . '_' . $file->getClientOriginalName();
-                $booking = Booking::find($request->id_booking);
-                // Pindahkan file
-                $file->move(public_path('uploads/pembayaran'), $namaFile);
+                
+                // Pastikan folder ada
+                $path = public_path('uploads/pembayaran');
+                if(!file_exists($path)){
+                    mkdir($path, 0755, true);
+                }
+                
+                $file->move($path, $namaFile);
 
-                // 4. Simpan ke Tabel Pembayaran
                 Pembayaran::create([
                     'id_booking'         => $request->id_booking,
                     'bukti_gambar'       => $namaFile,
-                    'metode'             => $booking->metode_pembayaran ?? 'Transfer',
+                    'metode'             => 'Transfer', // Default atau ambil dari booking
                     'tanggal_pembayaran' => now(),
                 ]);
 
-                // Opsional: Update status booking jika perlu
-                // $booking->update(['status' => 'menunggu_konfirmasi']);
+                // Update status booking otomatis jadi 'dibayar'
+                Booking::where('id_booking', $request->id_booking)->update(['status' => 'dibayar']);
 
                 return response()->json([
                     'status' => 'success',
