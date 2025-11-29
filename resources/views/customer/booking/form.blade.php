@@ -41,8 +41,8 @@
                                 data-nama="{{ strtolower($item->nama_layanan) }}">
 
                             <div class="flex flex-col items-center p-4 border-2 rounded-xl transition duration-200 
-                                        hover:border-[#6b4423] hover:bg-white 
-                                        peer-checked:border-[#6b4423] peer-checked:bg-[#eddcd2] peer-checked:ring-2 peer-checked:ring-[#6b4423]">
+                                            hover:border-[#6b4423] hover:bg-white 
+                                            peer-checked:border-[#6b4423] peer-checked:bg-[#eddcd2] peer-checked:ring-2 peer-checked:ring-[#6b4423]">
 
                                 <img src="{{ asset('images/' . $item->gambar) }}" alt="{{ $item->nama_layanan }}" class="w-12 h-12 mb-2 object-contain">
                                 <span class="text-sm font-bold text-gray-700">{{ $item->nama_layanan }}</span>
@@ -291,10 +291,6 @@
                         <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm inline-block relative group">
                             <div class="absolute -inset-0.5 bg-gradient-to-tr from-[#6b4423] to-green-500 rounded-xl blur opacity-30 group-hover:opacity-70 transition duration-1000"></div>
 
-                            {{-- GANTI GAMBAR INI DENGAN GAMBAR QRIS ASLI ANDA --}}
-                            {{-- Simpan gambar QRIS Anda di folder public/images/qris.jpg --}}
-                            {{-- <img src="{{ asset('images/qris.jpg') }}" ... > --}}
-
                             {{-- Placeholder QR Code (Contoh) --}}
                             <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=ContohQRISVictoryPawsHouse&bgcolor=ffffff&color=222222&margin=5"
                                 alt="Scan QRIS"
@@ -370,45 +366,74 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // 1. Setup Kalender (Flatpickr)
-        const bookedDates = JSON.parse('{!! json_encode($fullyBookedDates ?? []) !!}');
+        // --- 1. SETUP KALENDER (FLATPICKR) ---
+        const bookedDates = @json($fullyBookedDates ?? []);
+        const showModal = @json(session("success_popup") ? true : false);
+
         console.log("Tanggal Dibooking:", bookedDates);
 
-        const fpCheckin = flatpickr("#jadwal", {
+        // Hitung max date 2 bulan ke depan
+        const maxDate = new Date();
+        maxDate.setMonth(maxDate.getMonth() + 2);
+
+        // Definisi elemen Checkin & Checkout
+        const checkinInput = document.getElementById("jadwal");
+        const checkoutInput = document.getElementById("jadwal_checkout");
+
+        // Init Flatpickr Checkout dulu (agar variabel fpCheckout tersedia)
+        const fpCheckout = flatpickr(checkoutInput, {
             minDate: "today",
+            maxDate: maxDate,
             dateFormat: "Y-m-d",
             disable: bookedDates,
+            onChange: function(selectedDates, dateStr, instance) {
+                // Trigger event change agar perhitungan harga jalan
+                checkoutInput.dispatchEvent(new Event('change'));
+            }
+        });
 
-
-
+        // Init Flatpickr Checkin
+        const fpCheckin = flatpickr(checkinInput, {
+            minDate: "today",
+            maxDate: maxDate,
+            dateFormat: "Y-m-d",
+            disable: bookedDates,
             onChange: function(selectedDates, dateStr, instance) {
                 // Update minDate checkout agar tidak bisa sebelum checkin
-                fpCheckout.set('minDate', dateStr);
+                // Kita set +1 hari atau hari yang sama, tergantung kebijakan
+                if (fpCheckout) {
+                    fpCheckout.set('minDate', dateStr);
+                }
 
+                // Cek slot jam
                 fetchAvailableSlots(dateStr);
 
-
                 // Trigger perhitungan harga
-                document.getElementById('jadwal').dispatchEvent(new Event('change'));
+                checkinInput.dispatchEvent(new Event('change'));
             }
         });
 
-        const fpCheckout = flatpickr("#jadwal_checkout", {
-            minDate: "today",
-            dateFormat: "Y-m-d",
-            disable: bookedDates,
-            onChange: function(selectedDates, dateStr, instance) {
-                document.getElementById('jadwal_checkout').dispatchEvent(new Event('change'));
-            }
-        });
 
-        // 2. Setup Perhitungan Harga
+        // --- 2. MODAL SUCCESS POPUP ---
+        if (showModal) {
+            const modal = document.getElementById('successModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.firstElementChild.classList.add('scale-100');
+                    modal.firstElementChild.classList.remove('scale-95');
+                }, 10);
+            }
+        }
+
+
+        // --- 3. PERHITUNGAN HARGA ---
         const checkboxes = document.querySelectorAll('.service-checkbox');
         const checkoutField = document.getElementById('checkout-field');
-        const jadwalInput = document.getElementById('jadwal');
-        const checkoutInput = document.getElementById('jadwal_checkout');
         const totalSpan = document.getElementById('total-estimasi-harga');
         const hiddenTotalInput = document.getElementById('hidden-total');
+        const timeField = document.getElementById('time-field');
+        const timeInput = document.getElementById('jam_booking');
 
         const formatter = new Intl.NumberFormat('id-ID', {
             style: 'currency',
@@ -421,49 +446,45 @@
             let isHotelSelected = false;
             let isGroomingSelected = false;
 
-            // Loop setiap checkbox layanan
             checkboxes.forEach(chk => {
                 if (chk.checked) {
                     let harga = parseFloat(chk.getAttribute('data-harga'));
                     let nama = chk.getAttribute('data-nama');
 
-                    // Logika Khusus Hotel
+                    // Logika Hotel
                     if (nama.includes('hotel')) {
                         isHotelSelected = true;
 
-                        // Hitung Durasi Malam
-                        const checkin = new Date(jadwalInput.value);
+                        const checkin = new Date(checkinInput.value);
                         const checkout = new Date(checkoutInput.value);
 
-                        // Pastikan tanggal valid
-                        if (jadwalInput.value && checkoutInput.value && checkout > checkin) {
-                            const diffTime = Math.abs(checkout - checkin);
-                            const durasiMalam = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                            total += (harga * durasiMalam);
-                        } else {
-                            // Kalau tanggal belum lengkap, harga hotel belum dihitung (0)
-                            // atau bisa tambahkan harga dasar dulu, tergantung kebijakan.
-                            // Di sini kita anggap 0 dulu sampai tanggal diisi.
+                        // Cek apakah tanggal valid sebelum menghitung selisih
+                        if (checkinInput.value && checkoutInput.value && !isNaN(checkin) && !isNaN(checkout)) {
+                            if (checkout > checkin) {
+                                const diffTime = Math.abs(checkout - checkin);
+                                const durasiMalam = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                total += (harga * durasiMalam);
+                            }
                         }
                     } else {
-                        // Layanan biasa (Grooming/Home Service) -> Flat Price
+                        // Layanan biasa (Flat Price)
                         total += harga;
                         isGroomingSelected = true;
                     }
                 }
             });
-            const timeField = document.getElementById('time-field');
-            const timeInput = document.getElementById('jam_booking');
 
+            // Tampilkan/Sembunyikan Field Jam Booking
             if (isGroomingSelected) {
                 timeField.classList.remove('hidden');
-                timeInput.required = true; // Wajib diisi kalau grooming
+                timeInput.required = true;
             } else {
                 timeField.classList.add('hidden');
-                timeInput.required = false; // Tidak wajib kalau cuma hotel
+                timeInput.required = false;
                 timeInput.value = '';
             }
-            // Atur tampilan field checkout
+
+            // Tampilkan/Sembunyikan Field Checkout
             if (isHotelSelected) {
                 checkoutField.classList.remove('hidden');
                 checkoutInput.required = true;
@@ -475,8 +496,7 @@
                 checkoutInput.value = '';
             }
 
-
-            // Update Tampilan Total & Input Hidden
+            // Update UI Total
             totalSpan.textContent = formatter.format(total);
             hiddenTotalInput.value = total;
         }
@@ -489,25 +509,25 @@
             selectJam.innerHTML = '<option value="">Loading...</option>';
             selectJam.disabled = true;
 
-            // Panggil API Laravel
             fetch(`/booking/check-slots?date=${dateStr}`)
                 .then(response => response.json())
                 .then(data => {
                     selectJam.innerHTML = '<option value="">-- Pilih Jam --</option>';
 
-                    data.forEach(slot => {
-                        // Buat elemen option
-                        const option = document.createElement('option');
-                        option.value = slot.time; // Nilai: "09:00"
+                    if (data.length === 0) {
+                        selectJam.innerHTML = '<option value="">Tidak ada slot tersedia</option>';
+                    }
 
+                    data.forEach(slot => {
+                        const option = document.createElement('option');
+                        option.value = slot.time;
                         if (slot.available) {
                             option.text = slot.time;
                         } else {
                             option.text = slot.time + ' (Penuh)';
-                            option.disabled = true; // Matikan pilihan ini
-                            option.style.color = '#ccc'; // Warnai abu-abu
+                            option.disabled = true;
+                            option.style.color = '#ccc';
                         }
-
                         selectJam.appendChild(option);
                     });
 
@@ -522,28 +542,12 @@
 
         // Event Listeners
         checkboxes.forEach(chk => chk.addEventListener('change', calculateTotal));
-        jadwalInput.addEventListener('change', calculateTotal);
+        checkinInput.addEventListener('change', calculateTotal);
         checkoutInput.addEventListener('change', calculateTotal);
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
-        // Cek apakah session flash data 'success_popup' ada?
-        // Kita gunakan trik JSON.parse blade seperti sebelumnya agar VS Code tidak error
-        const showModal = JSON.parse('{!! json_encode(session("success_popup") ? true : false) !!}');
+    // --- FUNGSI GLOBAL (DI LUAR DOMContentLoaded) ---
 
-        if (showModal) {
-            const modal = document.getElementById('successModal');
-            modal.classList.remove('hidden'); // Tampilkan modal
-
-            // Animasi kecil (opsional)
-            setTimeout(() => {
-                modal.firstElementChild.classList.add('scale-100');
-                modal.firstElementChild.classList.remove('scale-95');
-            }, 10);
-        }
-    });
-
-    // Fungsi Tutup Modal
     function closeModal() {
         const modal = document.getElementById('successModal');
         modal.classList.add('hidden');
@@ -558,71 +562,82 @@
         }
     }
 
+    function copyText(elementId) {
+        var copyText = document.getElementById(elementId);
+        navigator.clipboard.writeText(copyText.innerText).then(() => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Disalin!',
+                text: 'Nomor berhasil disalin ke clipboard.',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        });
+    }
+
     // --- LOGIKA UPLOAD AJAX ---
-    const uploadForm = document.getElementById('form-upload-bukti');
-    if (uploadForm) {
-        uploadForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+    document.addEventListener('DOMContentLoaded', function() {
+        const uploadForm = document.getElementById('form-upload-bukti');
+        if (uploadForm) {
+            uploadForm.addEventListener('submit', function(e) {
+                e.preventDefault();
 
-            const btnUpload = document.getElementById('btn-upload');
-            const originalText = btnUpload.innerHTML;
+                const btnUpload = document.getElementById('btn-upload');
+                const originalText = btnUpload.innerHTML;
 
-            // Loading State
-            btnUpload.disabled = true;
-            btnUpload.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Mengupload...`;
+                // Loading State
+                btnUpload.disabled = true;
+                btnUpload.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Mengupload...`;
 
-            const formData = new FormData(this);
+                const formData = new FormData(this);
 
-            fetch("{{ route('payment.uploadBukti') }}", {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        // --- [MODIFIKASI] GANTI ALERT BIASA JADI SWEETALERT ---
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: data.message,
-                            confirmButtonColor: '#6b4423', // Warna Coklat Tema Anda
-                            confirmButtonText: 'OK'
-                        }).then((result) => {
-                            // Setelah user klik OK, baru tutup modal dan redirect
-                            if (result.isConfirmed) {
-                                closeModal();
-                                window.location.href = "{{ route('booking.index') }}";
-                            }
-                        });
-
-                    } else {
-                        // Error dari server
+                fetch("{{ route('payment.uploadBukti') }}", {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: data.message,
+                                confirmButtonColor: '#6b4423',
+                                confirmButtonText: 'OK'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    closeModal();
+                                    window.location.href = "{{ route('booking.index') }}";
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: data.message,
+                                confirmButtonColor: '#6b4423'
+                            });
+                            btnUpload.disabled = false;
+                            btnUpload.innerHTML = originalText;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
                         Swal.fire({
                             icon: 'error',
-                            title: 'Gagal',
-                            text: data.message,
+                            title: 'Oops...',
+                            text: 'Terjadi kesalahan sistem. Silakan coba lagi. Harap masukkan berupa gambar dengan format PNG, JPG, atau JPEG dan ukuran maksimal 2MB.',
                             confirmButtonColor: '#6b4423'
                         });
                         btnUpload.disabled = false;
                         btnUpload.innerHTML = originalText;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Terjadi kesalahan sistem. Silakan coba lagi.',
-                        confirmButtonColor: '#6b4423'
                     });
-                    btnUpload.disabled = false;
-                    btnUpload.innerHTML = originalText;
-                });
-        });
-    }
+            });
+        }
+    });
 </script>
 @endpush
 @endsection

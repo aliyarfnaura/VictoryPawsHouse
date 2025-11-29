@@ -6,15 +6,14 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 p-6 shadow sm:rounded-lg">
-                <!-- TAMPILAN SEMENTARA YANG AMAN -->
-                <h3 class="text-lg font-bold mb-4">Informasi Pengguna</h3>
-                <p><strong>Username:</strong> {{ $user->username }}</p>
-                <p><strong>Email:</strong> {{ $user->email }}</p>
-                <p class="mt-4 text-sm text-gray-600">
-                    Fitur lengkap untuk Edit Profil, Ganti Password, dan Hapus Akun akan diaktifkan di sini setelah kita fokus pada alur transaksi inti.
-                </p>
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            
+            {{-- BAGIAN 1: Update Info Profil (Username & No HP bisa diedit, Email terkunci) --}}
+            {{-- Ini akan memanggil file 'partials/update-profile-information-form.blade.php' yang tadi sudah kita edit --}}
+            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                <div class="max-w-xl">
+                    @include('profile.partials.update-profile-information-form')
+                </div>
             </div>
         </div>
     </div>

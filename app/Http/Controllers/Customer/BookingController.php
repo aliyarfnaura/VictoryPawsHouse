@@ -137,13 +137,13 @@ class BookingController extends Controller
             // 1. Wajib isi
             // 2. Harus angka (numeric)
             // 3. Panjang 10-15 digit
-            // 4. Harus diawali 08 atau 62 (regex)
+            // 4. Harus diawali 08 (regex)
             // 5. Tidak boleh isinya angka 0 semua (not_regex)
             'nomor_hp'          => [
                 'required',
                 'numeric',
                 'digits_between:10,15',
-                'regex:/^(08|62)/', 
+                'regex:/^08[0-9]+$/', 
                 'not_regex:/^0+$/'
             ],
 
@@ -159,12 +159,12 @@ class BookingController extends Controller
             // --- CUSTOM PESAN ERROR (Bahasa Indonesia) ---
             'nama_anda.regex'       => 'Nama Anda mengandung huruf berulang yang tidak wajar (Spam).',
             'nama_hewan.regex'      => 'Nama Hewan mengandung huruf berulang yang tidak wajar (Spam).',
-            
+                        
             'nomor_hp.required'     => 'Nomor HP wajib diisi.',
             'nomor_hp.numeric'      => 'Nomor HP harus berupa angka saja.',
-            'nomor_hp.digits_between' => 'Panjang Nomor HP harus antara 10 sampai 15 digit.',
-            'nomor_hp.regex'        => 'Nomor HP harus diawali dengan 08 atau 62.',
+            'nomor_hp.regex'        => 'Nomor HP harus diawali dengan 08.',
             'nomor_hp.not_regex'    => 'Nomor HP tidak valid (tidak boleh angka 0 semua).',
+            'nomor_hp.digits_between' => 'Panjang Nomor HP harus antara 10 sampai 15 digit.',
             
             'jadwal_checkout.after' => 'Tanggal checkout harus setelah tanggal check-in.',
             'jam_booking.required'  => 'Jam booking wajib dipilih untuk layanan ini.',
@@ -267,10 +267,25 @@ class BookingController extends Controller
 
     public function uploadBukti(Request $request)
     {
-        $request->validate([
+        // Gunakan Validator::make manual agar bisa return JSON Error yang seragam
+        $validator = Validator::make($request->all(), [
             'id_booking'   => 'required|exists:booking,id_booking',
-            'bukti_gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Maks 2MB
+            'bukti_gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Max 2MB (2048 KB)
+        ], [
+            // Custom Messages
+            'bukti_gambar.required' => 'Wajib upload gambar bukti pembayaran.',
+            'bukti_gambar.image'    => 'File yang diupload harus berupa gambar.',
+            'bukti_gambar.mimes'    => 'Format gambar harus JPEG, PNG, atau JPG.',
+            'bukti_gambar.max'      => 'Ukuran gambar terlalu besar! Maksimal 2MB ya.', // Pesan Error Size
         ]);
+
+        // Jika validasi gagal, kembalikan JSON error
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->first('bukti_gambar') // Ambil pesan error pertama
+            ], 422);
+        }
 
         try {
             if ($request->hasFile('bukti_gambar')) {
