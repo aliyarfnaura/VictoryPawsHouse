@@ -11,21 +11,23 @@ class ProfileUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => ['required', 'string', 'max:20'],
-            
-            'email' => [
-                'required', 
-                'string', 
-                'lowercase', 
-                'email', 
-                'regex:/^[A-Za-z0-9._%+-]+@gmail\.com$/',
-                'max:255', 
-                // Cek unik di tabel 'pengguna', abaikan ID user yang sedang login
-                Rule::unique(Pengguna::class)->ignore($this->user()->id_pengguna, 'id_pengguna'),
-            ],
+            'username' => ['required', 'string', 'max:20', 'regex:/^[a-zA-Z0-9]+$/'],
+            'no_telp' => ['nullable', 'numeric', 'digits_between:10,15', 'regex:/^08[0-9]+$/'],
+        ];
+    }
+    /**
+     * Custom message for validation errors.
+     */
+    public function messages(): array
+    {
+        return [
+            // Pesan Error Username
+            'username.regex' => '*Username tidak boleh mengandung simbol atau spasi (hanya huruf dan angka).',
+            'username.required' => '*Nama pengguna wajib diisi.',
 
-            // Validasi No Telp: Boleh kosong, Maks 20 digit, Format angka/plus/spasi
-            'no_telp' => ['nullable', 'string', 'digits_between:10,15','regex:/^08[0-9]{8,13}$/'],
+            // Pesan Error No Telp
+            'no_telp.regex' => '*Nomor HP harus diawali 08 dan hanya boleh berisi angka (tidak boleh ada simbol).',
+            'no_telp.digits_between' => '*Panjang Nomor HP minimal 10 digit dan maksimal 15 digit.',
         ];
     }
 }

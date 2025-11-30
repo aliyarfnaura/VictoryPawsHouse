@@ -7,7 +7,7 @@
     
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-800">Dashboard Overview</h1>
-        <span class="text-sm text-gray-500">Update Terakhir: {{ now()->format('d M Y H:i') }}</span>
+        <span class="text-sm text-gray-500">Update Terakhir: {{ now()->format('d M Y') }}</span>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">

@@ -209,18 +209,24 @@ class AdminController extends Controller
     $isUpdate = (bool)$id_produk;
     
     $request->validate([
-        'nama_produk' => ['required', 'string', 'max:100', 'regex:/^(?!.*(.)\1{3,}).+$/'],
+        'nama_produk' => ['required', 'string', 'max:100', 'regex:/^[a-zA-Z0-9\s]+$/', 'regex:/^(?!.*(.)\1{3,}).+$/'],
         'deskripsi' => ['required', 'string', 'max:500', 'regex:/^(?!.*(.)\1{3,}).+$/'],
         'harga' => ['required', 'numeric', 'min:1', 'max:5000000', 'not_in:0'],
         'gambar' => [$isUpdate ? 'nullable' : 'required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
     ],
     [
         // Custom Pesan Error (Opsional)
-        'nama_produk.regex' => 'Nama produk tidak boleh mengandung karakter berulang yang berlebihan (spam).',
-        'harga.min' => 'Harga produk minimal Rp 1.',
-        'harga.max' => 'Harga produk maksimal Rp 5.000.000.',
-        'harga.not_in' => 'Harga produk tidak boleh bernilai 0 atau kosong, harap masukkan nominal yang valid.',
-        'deskripsi.regex' => 'Keterangan produk tidak boleh mengandung karakter berulang yang berlebihan (spam).',
+        'nama_produk.required' => 'Nama produk wajib diisi.',
+        'nama_produk.regex'    => 'Nama produk hanya boleh berisi huruf, angka, dan spasi (Tanpa simbol), juga tidak boleh mengandung karakter berulang yang berlebihan (spam).',
+        'harga.required'       => 'Harga produk wajib diisi.',
+        'harga.min'            => 'Harga produk minimal Rp 1.',
+        'harga.max'            => 'Harga produk maksimal Rp 5.000.000.',
+        'harga.not_in'         => 'Harga produk tidak boleh bernilai 0 atau kosong, harap masukkan nominal yang valid.',
+        'deskripsi.required'   => 'Keterangan produk wajib diisi.',
+        'deskripsi.regex'      => 'Keterangan produk tidak boleh mengandung karakter berulang yang berlebihan (spam).',
+        'gambar.required'      => 'Gambar produk wajib diupload dengan ukuran maksimal 2MB.',
+        'gambar.image'         => 'File harus berupa gambar dengan format PNG, JPG, atau JPEG yang berukuran maksimal 2MB.',
+        'gambar.max'           => 'Ukuran gambar maksimal 2MB.',
     ]);
 
     $data = $request->only(['nama_produk', 'deskripsi', 'harga']);
@@ -284,16 +290,20 @@ public function destroyKatalog($id_produk)
         $isUpdate = (bool)$id_event;
         
         $request->validate([
-            'nama_event' => 'required|string|max:100|regex:/^(?!.*(.)\1{3,}).+$/',
-            'tanggal' => 'required|date_format:Y-m-d\TH:i|after_or_equal:now',
+            'nama_event' => 'required|string|max:100|regex:/^[a-zA-Z0-9\s]+$/|regex:/^(?!.*(.)\1{3,}).+$/',
+            'tanggal'    => 'required|date_format:Y-m-d\TH:i|after_or_equal:now',
             'lokasi'     => 'required|string|max:255|regex:/^(?!.*(.)\1{3,}).+$/',
             'deskripsi'  => 'required|string|max:500|regex:/^(?!.*(.)\1{3,}).+$/',
         ],
         [
         // Custom Pesan Error (Opsional)
-        'nama_event.regex' => 'Nama event tidak boleh mengandung karakter berulang yang berlebihan (spam).',
-        'lokasi.regex' => 'Lokasi event tidak boleh mengandung karakter berulang yang berlebihan (spam).',
-        'deskripsi.regex' => 'Deskripsi event tidak boleh mengandung karakter berulang yang berlebihan (spam).',
+        'nama_event.required'  => 'Nama event wajib diisi.',
+        'nama_event.regex'  => 'Nama event hanya boleh berisi huruf, angka, dan spasi (Tanpa simbol), juga tidak boleh mengandung karakter berulang yang berlebihan (spam).',
+        'tanggal.required'     => 'Tanggal dan waktu event wajib diisi.',
+        'lokasi.required'   => 'Lokasi event wajib diisi.',
+        'lokasi.regex'      => 'Lokasi event tidak boleh mengandung karakter berulang yang berlebihan (spam).',
+        'deskripsi.required'=> 'Keterangan event wajib diisi.',
+        'deskripsi.regex'   => 'Deskripsi event tidak boleh mengandung karakter berulang yang berlebihan (spam).',
     ]);
 
         $data = $request->only(['nama_event', 'tanggal', 'lokasi', 'deskripsi']);

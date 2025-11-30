@@ -14,12 +14,16 @@
             @error('username') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
 
-        {{-- Email --}}
+        {{-- Email (DIPERBAIKI: READONLY & ABU-ABU) --}}
         <div>
             <label for="email" class="block text-sm font-semibold text-gray-700">Email Address</label>
-            <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" required
-                class="w-full border-gray-300 rounded-lg shadow-sm p-3 mt-1">
-            @error('email') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" 
+                class="w-full border-gray-300 rounded-lg shadow-sm p-3 mt-1 bg-gray-200 text-gray-500 cursor-not-allowed focus:outline-none focus:ring-0"
+                readonly
+                tabindex="-1" {{-- Agar tidak bisa di-tab --}}
+                onclick="return false;" {{-- Mencegah klik --}}
+                >
+            <p class="text-[10px] text-red-500 mt-1 italic">*Email tidak dapat diubah.</p>
         </div>
         
         {{-- Phone Number --}}

@@ -64,11 +64,8 @@
                                         </svg>
                                     </button>
                                 </form>
-
                             </div>
-
                         </div>
-
                     </li>
                 @empty
                     <li class="py-10 text-center text-gray-500">Belum ada produk dalam katalog.</li>
@@ -112,6 +109,7 @@
 
                 <div class="mb-6">
                     <label for="gambar" class="block text-sm font-semibold text-gray-700 mb-1">Upload Foto Produk</label>
+                    <label for="gambar" class="block text-sm font-regular text-[#6b4423] mb-1">*Upload foto dengan format PNG, JPG, atau JPEG dan ukuran maksimal 2MB.</label>
                     @if ($productToEdit && $productToEdit->gambar)
                         <p class="text-sm text-gray-500 mb-2">Foto Saat Ini:</p>
                         <img src="{{ asset('storage/' . $productToEdit->gambar) }}" 
