@@ -1,55 +1,88 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laporan Transaksi</title>
+    <title>Laporan Transaksi Booking</title>
     <style>
-        body { font-family: sans-serif; font-size: 12px; }
-        h2 { text-align: center; color: #333; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #333; padding: 6px; }
-        th { background-color: #e0e0e0; }
+        body { font-family: sans-serif; font-size: 10px; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { margin: 0; color: #6b4423; }
+        .header p { margin: 2px 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #333; padding: 5px; text-align: left; }
+        th { background-color: #6b4423; color: white; text-align: center; }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .badge { padding: 2px 5px; border-radius: 3px; color: white; font-weight: bold; text-transform: uppercase; font-size: 8px; }
+        .bg-green { background-color: green; }
+        .bg-red { background-color: red; }
+        .bg-yellow { background-color: #eab308; color: black; }
     </style>
 </head>
 <body>
 
-    <h2>LAPORAN TRANSAKSI VICTORY PAWS HOUSE</h2>
-    <p style="text-align: center;">Tanggal Cetak: {{ date('d M Y') }}</p>
+    <div class="header">
+        <h1>LAPORAN TRANSAKSI VICTORY PAWS HOUSE</h1>
+        <p>Jl. Veteran no.11, Banjarmasin | WA: 08111511050</p>
+        <p>Tanggal Cetak: {{ now()->translatedFormat('d M Y') }}</p>
+    </div>
 
     <table>
         <thead>
             <tr>
-                <th>No</th>
-                <th>Tanggal</th>
-                <th>Customer</th>
-                <th>Layanan</th>
-                <th>Status</th>
-                <th>Total</th>
+                <th style="width: 5%">No</th>
+                <th style="width: 15%">Tanggal</th>
+                <th style="width: 20%">Customer</th>
+                <th style="width: 30%">Layanan</th>
+                <th style="width: 15%">Status</th>
+                <th style="width: 15%">Total</th>
             </tr>
         </thead>
         <tbody>
-            @php $grandTotal = 0; @endphp
-            @foreach($bookings as $index => $b)
+            @foreach($bookings as $index => $booking)
             <tr>
-                <td style="text-align: center;">{{ $index + 1 }}</td>
-                <td>{{ \Carbon\Carbon::parse($b->jadwal)->format('d/m/Y') }}</td>
-                <td>{{ $b->nama }}</td>
+                <td class="text-center">{{ $index + 1 }}</td>
+                <td>{{ \Carbon\Carbon::parse($booking->created_at)->format('d/m/Y') }}</td>
                 <td>
-                    @foreach($b->details as $d)
-                        - {{ $d->layanan->nama_layanan ?? '-' }}<br>
-                    @endforeach
+                    <strong>{{ $booking->nama }}</strong><br>
+                    <span style="font-size: 8px; color: #555;">{{ $booking->nomor_hp }}</span>
                 </td>
-                <td>{{ ucfirst($b->status) }}</td>
-                <td style="text-align: right;">Rp {{ number_format($b->total_harga, 0, ',', '.') }}</td>
+                <td>
+                    <ul style="margin: 0; padding-left: 15px;">
+                        @foreach($booking->details as $detail)
+                            @php
+                                $namaLayanan = $detail->layanan->nama_layanan;
+                                
+                                if (stripos($namaLayanan, 'hotel') !== false) {
+                                    $checkin = \Carbon\Carbon::parse($booking->jadwal);
+                                    $checkout = \Carbon\Carbon::parse($booking->tanggal_checkout);
+                                    
+                                    $durasi = $checkin->diffInDays($checkout);
+                                    $durasi = $durasi < 1 ? 1 : $durasi;
+                                    $namaLayanan .= " (" . $durasi . " Malam)";
+                                }
+                            @endphp
+                            <li>{{ $namaLayanan }}</li>
+                        @endforeach
+                    </ul>
+                </td>
+                <td class="text-center">
+                    @php
+                        $color = 'bg-yellow';
+                        if($booking->status == 'dibayar') $color = 'bg-green';
+                        if($booking->status == 'ditolak') $color = 'bg-red';
+                    @endphp
+                    <span class="badge {{ $color }}">{{ $booking->status }}</span>
+                </td>
+                <td class="text-right">Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</td>
             </tr>
-            @php $grandTotal += $b->total_harga; @endphp
             @endforeach
-            
-            <tr style="background-color: #f0f0f0; font-weight: bold;">
-                <td colspan="5" style="text-align: right;">GRAND TOTAL PENDAPATAN</td>
-                <td style="text-align: right;">Rp {{ number_format($grandTotal, 0, ',', '.') }}</td>
-            </tr>
         </tbody>
     </table>
+
+    <div style="margin-top: 30px; text-align: right; font-size: 11px;">
+        <p>Banjarmasin, {{ now()->translatedFormat('d F Y') }}</p>
+        <p style="margin-top: 50px;"><strong>( Admin Victory PawsHouse )</strong></p>
+    </div>
 
 </body>
 </html>

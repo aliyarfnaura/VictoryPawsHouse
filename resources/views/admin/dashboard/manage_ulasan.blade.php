@@ -119,16 +119,12 @@
 
     <script>
         function openReplyModal(id, currentReply) {
-            // Set Action URL Form
             document.getElementById('form-reply').action = "/admin/ulasan/" + id + "/reply";
-            // Isi Textarea (untuk edit)
             document.getElementById('reply-content').value = currentReply;
-            // Tampilkan Modal
             document.getElementById('replyModal').classList.remove('hidden');
             document.getElementById('replyModal').classList.add('flex');
         }
         
-        // Close jika klik luar
         window.onclick = function(event) {
             const modal = document.getElementById('replyModal');
             if (event.target == modal) {
@@ -138,7 +134,6 @@
     </script>
     
     <style>
-        /* Helper untuk hover effect pada tombol edit di dalam card */
         .group-reply:hover button { opacity: 1; }
     </style>
 @endsection
