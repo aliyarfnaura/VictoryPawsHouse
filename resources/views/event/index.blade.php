@@ -5,7 +5,7 @@
 @section('content')
     <div class="relative bg-[#F8F4E1] max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div class="absolute inset-0">
-            <img src="{{ asset('images/bg_event.png') }}" alt="Background Event" 
+            <img src="{{ asset('images/bg_event.jpg') }}" alt="Background Event" 
                  class="w-full h-full object-cover opacity-20">
         </div>
         <div class="relative z-10">
