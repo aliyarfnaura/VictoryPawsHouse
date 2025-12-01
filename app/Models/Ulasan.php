@@ -13,10 +13,8 @@ class Ulasan extends Model
     protected $primaryKey = 'id_ulasan';
     
     protected $fillable = [
-        'id_booking',   // <--- WAJIB DITAMBAHKAN DI SINI
+        'id_booking',
         'id_pengguna',
-        // 'id_layanan', // (Opsional: Hapus jika sudah tidak dipakai, karena ikut booking)
-        // 'id_produk',  // (Opsional: Hapus jika sudah tidak dipakai)
         'rating', 
         'komentar',
         'balasan',

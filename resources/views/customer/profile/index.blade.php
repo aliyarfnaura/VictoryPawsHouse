@@ -5,9 +5,7 @@
 @section('content')
     <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div class="bg-white rounded-xl shadow-2xl overflow-hidden md:grid md:grid-cols-4">
-            
             <div class="md:col-span-1 p-8 bg-[#fcf8f0] border-r border-gray-100 flex flex-col items-center">
-                
                 {{-- User Info --}}
                 <div class="text-center mb-8">
                     <div class="w-16 h-16 bg-[#6b4423] rounded-full flex items-center justify-center mx-auto mb-3">
@@ -65,7 +63,6 @@
                 </form>
             </div>
             
-            <!-- KOLOM KANAN: KONTEN DINAMIS -->
             <div class="md:col-span-3 p-8 md:p-12 bg-white">
                 @if (session('success'))
                     <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center">

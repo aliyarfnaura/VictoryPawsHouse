@@ -1,7 +1,5 @@
 @extends('layouts.app')
-
 @section('title', 'Katalog Produk Victory Paws House')
-
 @section('content')
     <div class="bg-[#F8F4E1] max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         

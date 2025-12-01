@@ -16,7 +16,7 @@ return new class extends Migration
 public function down()
 {
     Schema::table('events', function (Blueprint $table) {
-        $table->date('tanggal')->change(); // kembalikan seperti awal (opsional)
+        $table->date('tanggal')->change();
     });
 }
 };

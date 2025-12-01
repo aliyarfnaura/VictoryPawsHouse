@@ -11,7 +11,7 @@ class ProfileUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => ['required', 'string', 'max:20', 'regex:/^[a-zA-Z0-9]+$/'],
+            'username' => ['required', 'string', 'max:20', 'regex:/^[a-zA-Z\s]+$/'],
             'no_telp' => ['nullable', 'numeric', 'digits_between:10,15', 'regex:/^08[0-9]+$/'],
         ];
     }
@@ -22,7 +22,7 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             // Pesan Error Username
-            'username.regex' => '*Username tidak boleh mengandung simbol atau spasi (hanya huruf dan angka).',
+            'username.regex' => '*Username tidak boleh mengandung simbol dan angka (hanya huruf ).',
             'username.required' => '*Nama pengguna wajib diisi.',
 
             // Pesan Error No Telp

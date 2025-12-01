@@ -6,13 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
 {
     Schema::table('ulasan', function (Blueprint $table) {
-        $table->text('balasan')->nullable()->after('komentar'); // Kolom balasan admin
+        $table->text('balasan')->nullable()->after('komentar');
     });
 }
 

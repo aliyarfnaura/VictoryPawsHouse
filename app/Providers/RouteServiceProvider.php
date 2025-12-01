@@ -10,18 +10,8 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    /**
-     * The path to the user's home screen.
-     *
-     * Diarahkan ke Home Page ('/').
-     *
-     * @var string
-     */
     public const HOME = '/'; 
 
-    /**
-     * Define your route model bindings, pattern filters, and other route configurations.
-     */
     public function boot(): void
     {
         RateLimiter::for('api', function (Request $request) {

@@ -9,20 +9,13 @@ use Illuminate\Http\Request;
 
 class LayananPublikController extends Controller
 {
-    /**
-     * Menampilkan halaman utama Layanan, Produk, dan Event untuk pelanggan.
-     * Halaman 4 di flow Anda.
-     */
     public function index()
     {
         $layanans = Layanan::all();
-
         $grooming = $layanans->where('jenis', 'Grooming')->first();
         $hotel = $layanans->where('jenis', 'Pet Hotel')->first();
         $home_service = $layanans->where('jenis', 'Home Service')->first();
-
         $produk_display = Produk::latest()->limit(1)->first(); 
-
         $event_display = Event::where('tanggal', '>=', now())
                             ->orderBy('tanggal', 'asc')
                             ->limit(1)

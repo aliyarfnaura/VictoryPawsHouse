@@ -39,15 +39,11 @@ class Booking extends Model
         return $this->belongsTo(Pengguna::class, 'id_pengguna', 'id_pengguna');
     }
     
-    // --- [TAMBAHKAN BAGIAN INI] ---
-
-    // Relasi ke Pembayaran (Penyebab Error Anda)
     public function pembayaran()
     {
         return $this->hasOne(Pembayaran::class, 'id_booking', 'id_booking');
     }
 
-    // Relasi ke Detail Booking (Penting untuk Admin melihat layanan apa yang dipesan)
     public function details()
     {
         return $this->hasMany(DetailBooking::class, 'id_booking', 'id_booking');

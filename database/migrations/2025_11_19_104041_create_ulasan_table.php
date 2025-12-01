@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
 {
     Schema::create('ulasan', function (Blueprint $table) {
@@ -19,19 +16,16 @@ return new class extends Migration
               ->onDelete('cascade');
 
         $table->foreignId('id_booking')
-              ->unique() // Satu booking satu ulasan
+              ->unique()
               ->references('id_booking')->on('booking')
               ->onDelete('cascade');
 
-        $table->unsignedTinyInteger('rating'); // 1-5
+        $table->unsignedTinyInteger('rating');
         $table->text('komentar')->nullable();
         $table->timestamps();
     });
 }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('ulasan');

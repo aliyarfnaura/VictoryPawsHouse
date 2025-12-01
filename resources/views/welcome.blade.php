@@ -39,7 +39,6 @@
         </div>
     </div>
 
-    <!-- Navbar utama -->
     <nav class="bg-[#F8F4E1] shadow" style="border-bottom: 5px solid #543310;">
         <div class="max-w-7xl mx-auto px-4 flex flex-wrap md:flex-nowrap justify-between items-center py-4">
             <div class="flex items-start space-x-3 w-full md:w-auto">
@@ -58,7 +57,6 @@
                 </div>
             </div>
 
-            <!-- Menu navigasi -->
             <div class="flex flex-wrap md:flex-nowrap gap-4 md:gap-6 text-base font-medium mt-3 md:mt-0">
                 @php $isActive = Request::is('/') || Request::routeIs('home'); @endphp
                 <a href="/"  

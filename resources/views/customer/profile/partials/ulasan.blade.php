@@ -191,8 +191,6 @@
     function openEditModal(id, rating, komentar) {
         const form = document.getElementById('form-edit-review');
         form.action = "/review/" + id; 
-        
-        // Reset radio buttons
         document.querySelectorAll('input[name="rating"]').forEach(r => r.checked = false);
         
         const starRadio = document.getElementById('edit-star' + rating);
@@ -202,7 +200,6 @@
         document.getElementById('editReviewModal').classList.remove('hidden');
     }
     
-    // Close modal on outside click
     window.onclick = function(event) {
         const modals = ['reviewModal', 'editReviewModal'];
         modals.forEach(id => {

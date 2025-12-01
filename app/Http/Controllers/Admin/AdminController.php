@@ -292,16 +292,16 @@ public function destroyKatalog($id_produk)
         $request->validate([
             'nama_event' => 'required|string|max:100|regex:/^[a-zA-Z0-9\s]+$/|regex:/^(?!.*(.)\1{3,}).+$/',
             'tanggal'    => 'required|date_format:Y-m-d\TH:i|after_or_equal:now',
-            'lokasi'     => 'required|string|max:255|regex:/^(?!.*(.)\1{3,}).+$/',
+            'lokasi'     => 'required|string|max:255|regex:/^[a-zA-Z0-9\s]+$/|regex:/^(?!.*(.)\1{3,}).+$/',
             'deskripsi'  => 'required|string|max:500|regex:/^(?!.*(.)\1{3,}).+$/',
         ],
         [
         // Custom Pesan Error (Opsional)
         'nama_event.required'  => 'Nama event wajib diisi.',
-        'nama_event.regex'  => 'Nama event hanya boleh berisi huruf, angka, dan spasi (Tanpa simbol), juga tidak boleh mengandung karakter berulang yang berlebihan (spam).',
+        'nama_event.regex'  => 'Nama event hanya boleh berisi huruf, angka, dan spasi (tanpa simbol), juga tidak boleh mengandung karakter berulang yang berlebihan (spam).',
         'tanggal.required'     => 'Tanggal dan waktu event wajib diisi.',
         'lokasi.required'   => 'Lokasi event wajib diisi.',
-        'lokasi.regex'      => 'Lokasi event tidak boleh mengandung karakter berulang yang berlebihan (spam).',
+        'lokasi.regex'      => 'Lokasi event hanya boleh berisi huruf, angka, dan spasi (tanpa simbol), juga tidak boleh mengandung karakter berulang yang berlebihan (spam).',
         'deskripsi.required'=> 'Keterangan event wajib diisi.',
         'deskripsi.regex'   => 'Deskripsi event tidak boleh mengandung karakter berulang yang berlebihan (spam).',
     ]);
