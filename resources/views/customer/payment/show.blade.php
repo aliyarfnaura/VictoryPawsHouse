@@ -21,7 +21,6 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3">
-            
             {{-- KOLOM KIRI: RINCIAN --}}
             <div class="md:col-span-2 p-8 border-r border-gray-100">
                 <h3 class="text-lg font-bold text-gray-800 mb-4">Rincian Pesanan</h3>
@@ -155,7 +154,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    // Fungsi Buka/Tutup Modal
     function openUploadModal() {
         document.getElementById('uploadModal').classList.remove('hidden');
     }
@@ -163,7 +161,6 @@
         document.getElementById('uploadModal').classList.add('hidden');
     }
 
-    // Preview Nama File
     function showFileName(input) {
         const fileName = input.files[0]?.name;
         const previewText = document.getElementById('file-name-preview');
@@ -173,7 +170,6 @@
         }
     }
 
-    // Logika Upload AJAX (Sama seperti di Booking Form)
     const uploadForm = document.getElementById('form-upload-bukti');
     if (uploadForm) {
         uploadForm.addEventListener('submit', function(e) {
@@ -200,7 +196,7 @@
                         confirmButtonColor: '#6b4423'
                     }).then(() => {
                         closeUploadModal();
-                        location.reload(); // Refresh halaman agar status berubah
+                        location.reload();
                     });
                 } else {
                     Swal.fire({ icon: 'error', title: 'Gagal', text: data.message });

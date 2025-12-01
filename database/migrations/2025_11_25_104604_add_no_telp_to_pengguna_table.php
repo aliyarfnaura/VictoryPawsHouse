@@ -9,7 +9,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('pengguna', function (Blueprint $table) {
-            // Tambahkan kolom no_telp setelah email, nullable (boleh kosong)
             $table->string('no_telp', 20)->nullable()->after('email');
         });
     }

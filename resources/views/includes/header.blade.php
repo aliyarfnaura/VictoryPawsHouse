@@ -1,5 +1,3 @@
-<!-- FILE: resources/views/partials/_header_navbar.blade.php -->
-<!-- Digunakan di dalam layout app.blade.php -->
 <header>
     <div class="bg-[#6b4423] text-white text-xs sm:text-sm py-2">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row sm:justify-between sm:items-center px-4 gap-2">
@@ -31,7 +29,6 @@
         </div>
     </div>
 
-    <!-- Navbar utama -->
     <nav class="bg-[#F8F4E1] shadow" style="border-bottom: 5px solid #543310;">
         <div class="max-w-7xl mx-auto px-4 flex flex-wrap md:flex-nowrap justify-between items-center py-4">
             <div class="flex items-center space-x-3 w-full md:w-auto">

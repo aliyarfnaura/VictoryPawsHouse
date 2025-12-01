@@ -91,7 +91,6 @@
                 <p class="text-lg font-semibold text-gray-500">Belum ada ulasan saat ini.</p>
             </div>
         @endforelse
-
     </section>
 </div>
 @endsection

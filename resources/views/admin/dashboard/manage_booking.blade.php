@@ -91,9 +91,7 @@
                             </select>
                         </form>
                     </td>
-                    
-                    
-
+                
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         {{-- TOMBOL PDF SATUAN --}}
                         <a href="{{ route('admin.booking.pdf', $booking->id_booking) }}" class="text-red-600 hover:text-red-900 flex justify-end items-center gap-1">

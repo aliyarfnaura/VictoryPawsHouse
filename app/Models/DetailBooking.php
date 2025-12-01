@@ -18,11 +18,8 @@ class DetailBooking extends Model
         'harga_saat_ini',
     ];
 
-    // Relasi ke Layanan (agar bisa ambil nama/gambar layanan)
     public function layanan()
     {
         return $this->belongsTo(Layanan::class, 'id_layanan', 'id_layanan');
     }
-
-    
 }

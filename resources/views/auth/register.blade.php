@@ -8,12 +8,9 @@
 </head>
 
 <body class="font-sans antialiased bg-[#F8F4E1] overflow-x-hidden">
-
-    <!-- HEADER -->
     <header class="bg-[#6b4423] text-white text-sm py-2">
         <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center px-4 gap-3">
 
-            <!-- LEFT: IG & WA -->
             <div class="flex flex-wrap items-center gap-4">
                 <div class="flex items-center space-x-1">
                     <img src="{{ asset('images/logo_ig.png') }}" alt="IG" class="w-5 h-5">
@@ -26,7 +23,6 @@
                 </div>
             </div>
 
-            <!-- RIGHT: LOGIN & SIGN UP -->
             <nav class="flex items-center gap-3">
                 <a href="{{ route('login') }}" class="hover:underline text-sm whitespace-nowrap">LOGIN</a>
                 <span>|</span>
@@ -35,13 +31,8 @@
         </div>
     </header>
 
-    <!-- MAIN -->
     <main class="min-h-screen flex flex-col md:flex-row">
-
-        <!-- LEFT COLUMN -->
         <section class="md:w-2/5 flex flex-col items-center justify-center bg-[#F8F4E1] p-10">
-
-            <!-- BRANDING: LOGO KIRI, TEKS KANAN -->
             <a href="/" class="flex items-center space-x-4 mb-12">
                 <img src="{{ asset('images/paw.png') }}" alt="paw" class="w-16 h-16 md:w-20 md:h-20">
 
@@ -57,18 +48,14 @@
                  alt="pets">
         </section>
 
-        <!-- RIGHT COLUMN: FORM -->
         <section class="md:w-3/5 bg-[#AF8F6F] flex items-center justify-center p-10">
             <div class="w-full max-w-md">
-
                 <h1 class="text-4xl sm:text-5xl font-extrabold text-[#F8F4E1] text-center mb-10 tracking-wide">
                     SIGN UP
                 </h1>
 
                 <form method="POST" action="{{ route('register') }}">
                     @csrf
-
-                    <!-- USERNAME -->
                     <div class="mb-6">
                         <input id="username" type="text" name="username" value="{{ old('username') }}" required
                                placeholder="Username"
@@ -76,7 +63,6 @@
                         <x-input-error :messages="$errors->get('username')" class="mt-2" />
                     </div>
 
-                    <!-- EMAIL -->
                     <div class="mb-6">
                         <input id="email" type="email" name="email" value="{{ old('email') }}" required
                                placeholder="Email"
@@ -84,7 +70,6 @@
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
 
-                    <!-- PASSWORD -->
                     <div class="mb-6">
                         <input id="password" type="password" name="password" required
                                placeholder="Password"
@@ -92,7 +77,6 @@
                         <x-input-error :messages="$errors->get('password')" class="mt-2" />
                     </div>
 
-                    <!-- CONFIRM PASSWORD -->
                     <div class="mb-8">
                         <input id="password_confirmation" type="password" name="password_confirmation" required
                                placeholder="Konfirmasi Password"
@@ -102,13 +86,11 @@
 
                     <input type="hidden" name="role" value="pelanggan">
 
-                    <!-- SUBMIT -->
                     <button type="submit"
                             class="w-full bg-[#6b4423] text-white font-bold py-3 rounded-full shadow hover:bg-[#4a3719] transition">
                         Let's Start!
                     </button>
 
-                    <!-- LOGIN LINK -->
                     <p class="text-center mt-6 text-[#F8F4E1]">
                         Already have an account?
                         <a href="{{ route('login') }}" class="underline hover:text-gray-200 font-bold">
@@ -116,10 +98,8 @@
                         </a>
                     </p>
                 </form>
-
             </div>
         </section>
     </main>
-
 </body>
 </html>

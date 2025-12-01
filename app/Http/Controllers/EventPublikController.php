@@ -12,7 +12,6 @@ class EventPublikController extends Controller
         $events = Event::where('tanggal', '>=', now())
                             ->orderBy('tanggal', 'asc')
                             ->get();
-
         return view('event.index', compact('events'));
     }
 }

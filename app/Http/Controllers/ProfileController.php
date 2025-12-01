@@ -15,7 +15,6 @@ class ProfileController extends Controller
 {
     public function index(Request $request, $tab = 'profile'): View
     {
-        /** @var \App\Models\User $user */
         $user = $request->user(); 
         $data = [];
 
@@ -52,7 +51,6 @@ class ProfileController extends Controller
         ]);
     }
 
-    //edit
     public function edit(Request $request): View
     {
         return view('profile.edit', [
@@ -64,19 +62,15 @@ class ProfileController extends Controller
     {
         $validatedData = $request->validated();
         $user = $request->user();
-
         $user->fill($validatedData);
         
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
         }
-
         $user->save();
-
         return Redirect::route('profile.index', ['tab' => 'profile'])->with('success', 'Profile berhasil diperbarui!');
     }
     
-    //review
     public function storeReview(Request $request)
     {
         $request->validate([
@@ -84,13 +78,10 @@ class ProfileController extends Controller
             'rating'     => 'required|integer|min:1|max:5',
             'komentar'   => 'nullable|string|max:500',
         ]);
-        
         $userId = $request->user()->id_pengguna; 
-
         $booking = Booking::where('id_booking', $request->id_booking)
                           ->where('id_pengguna', $userId) 
                           ->firstOrFail();
-
         if ($booking->ulasan) {
             return back()->with('error', 'Anda sudah memberikan ulasan.');
         }
@@ -101,7 +92,6 @@ class ProfileController extends Controller
             'rating'      => $request->rating,
             'komentar'    => $request->komentar,
         ]);
-
         return back()->with('success', 'Ulasan berhasil dikirim.');
     }
 
@@ -111,7 +101,6 @@ class ProfileController extends Controller
             'rating'   => 'required|integer|min:1|max:5',
             'komentar' => 'nullable|string|max:500',
         ]);
-        
         $userId = $request->user()->id_pengguna;
 
         $review = Ulasan::where('id_ulasan', $id)->where('id_pengguna', $userId)->firstOrFail();

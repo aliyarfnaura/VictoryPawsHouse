@@ -10,14 +10,8 @@ use Laravel\Sanctum\HasApiTokens;
 class Pengguna extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-
     protected $table = 'pengguna';
-
     protected $primaryKey = 'id_pengguna';
-
-    /**
-     * Daftar kolom yang boleh diisi (Mass Assignable)
-     */
     protected $fillable = [
         'username',
         'email',

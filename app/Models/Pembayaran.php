@@ -12,13 +12,12 @@ class Pembayaran extends Model
     protected $table = 'pembayaran';
     protected $primaryKey = 'id_pembayaran';
 
-    // Konfigurasi Created At custom (Sesuai diskusi kita sebelumnya)
     const CREATED_AT = 'tanggal_pembayaran';
     const UPDATED_AT = 'updated_at';
 
     protected $fillable = [
         'id_booking',
-        'metode',       // <--- PASTIKAN INI ADA
+        'metode',      
         'bukti_gambar',
         'tanggal_pembayaran',
     ];

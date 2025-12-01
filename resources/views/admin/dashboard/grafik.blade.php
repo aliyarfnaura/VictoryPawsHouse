@@ -123,9 +123,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // --- 1. Grafik Pendapatan (Line Chart) ---
     const ctxRevenue = document.getElementById('revenueChart').getContext('2d');
-    // Gunakan JSON.parse agar VS Code tidak error merah
     const revenueData = JSON.parse('{!! json_encode($monthlyEarnings) !!}');
     
     new Chart(ctxRevenue, {
@@ -149,22 +147,19 @@
         }
     });
 
-    // --- 2. Grafik Status (Doughnut Chart) ---
     const ctxStatus = document.getElementById('statusChart').getContext('2d');
-    // Gunakan JSON.parse juga di sini
     const statusData = JSON.parse('{!! json_encode($pieData) !!}');
 
     new Chart(ctxStatus, {
         type: 'doughnut',
         data: {
-            // Pastikan Label ini urutannya SAMA dengan Controller
             labels: ['Pending', 'Sukses (Dibayar)', 'Ditolak'], 
             datasets: [{
                 data: statusData, 
                 backgroundColor: [
-                    '#f59e0b', // Index 0: Pending (Kuning)
-                    '#10b981', // Index 1: Dibayar (Hijau)
-                    '#ef4444'  // Index 2: Ditolak (Merah)
+                    '#f59e0b',
+                    '#10b981',
+                    '#ef4444'  
                 ],
                 borderWidth: 0
             }]
