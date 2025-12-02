@@ -75,9 +75,9 @@
 
                             @php
                             $bgStatus = match($booking->status) {
-                            'dibayar' => 'bg-green-100 text-green-800 border-green-300', // Dibayar jadi HIJAU (Sukses)
+                            'dibayar' => 'bg-green-100 text-green-800 border-green-300',
                             'ditolak' => 'bg-red-100 text-red-800 border-red-300',
-                            default => 'bg-yellow-100 text-yellow-800 border-yellow-300' // Pending
+                            default => 'bg-yellow-100 text-yellow-800 border-yellow-300'
                             };
                             @endphp
 
